@@ -4,3 +4,4 @@ export * from './dashboard';
 export * from './devices';
 export * from './device-actions';
 export * from './assignments';
+export * from './my-devices';

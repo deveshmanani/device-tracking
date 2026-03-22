@@ -29,4 +29,9 @@ export const queryKeys = {
     all: ['events'] as const,
     device: (deviceId: string) => [...queryKeys.events.all, 'device', deviceId] as const,
   },
+  
+  // My Devices
+  myDevices: {
+    all: ['my-devices'] as const,
+  },
 };

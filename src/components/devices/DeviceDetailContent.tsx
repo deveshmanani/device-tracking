@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import StatusBadge from '@/components/shared/StatusBadge';
 import QRCodePreview from '@/components/shared/QRCodePreview';
+import DeviceHistory from './DeviceHistory';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft, Edit, Calendar, User, Package } from 'lucide-react';
@@ -221,15 +222,15 @@ const DeviceDetailContent = ({ deviceId }: DeviceDetailContentProps) => {
                 Assign Device
               </Button>
               <Button className="w-full" variant="outline" disabled>
-                View History
-              </Button>
-              <Button className="w-full" variant="outline" disabled>
                 Generate Report
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Device History */}
+      <DeviceHistory deviceId={device.id} />
     </div>
   );
 };
