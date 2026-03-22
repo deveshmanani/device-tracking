@@ -152,9 +152,7 @@ Required environment variables are validated at runtime using Zod. The app will 
 - ✅ Phase 1: Project foundation (COMPLETE)
 - ✅ Phase 2: Database schema & security (COMPLETE)
 - ✅ Phase 3: Authentication & user bootstrap (COMPLETE)
-- ⏳ Phase 4: App shell & responsive layout
-- ⏳ Phase 3: Authentication & user bootstrap
-- ⏳ Phase 4: App shell & responsive layout
+- ✅ Phase 4: App shell & responsive layout (COMPLETE)
 - ⏳ Phase 5: Device inventory features
 - ⏳ Phase 6: QR code generation
 - ⏳ Phase 7: Assignment engine
