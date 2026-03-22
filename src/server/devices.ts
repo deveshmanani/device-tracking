@@ -44,6 +44,7 @@ export async function getDeviceById(id: string): Promise<DeviceDetail> {
       *,
       device_assignments!device_assignments_device_id_fkey (
         user_id,
+        returned_at,
         profiles:user_id (
           id,
           full_name,
@@ -131,6 +132,7 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
       updated_at,
       device_assignments!device_assignments_device_id_fkey (
         user_id,
+        returned_at,
         profiles:user_id (
           id,
           full_name,
