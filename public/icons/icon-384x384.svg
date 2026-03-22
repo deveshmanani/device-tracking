@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="384" height="384" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="384" height="384" fill="#0f172a"/>
+  
+  <!-- QR-like pattern -->
+  <g opacity="0.9">
+    <!-- Top-left corner -->
+    <rect x="57.599999999999994" y="57.599999999999994" width="76.80000000000001" height="76.80000000000001" fill="white" rx="7.68"/>
+    <rect x="72.96000000000001" y="72.96000000000001" width="46.08" height="46.08" fill="#0f172a" rx="3.84"/>
+    
+    <!-- Top-right corner -->
+    <rect x="249.60000000000002" y="57.599999999999994" width="76.80000000000001" height="76.80000000000001" fill="white" rx="7.68"/>
+    <rect x="264.96" y="72.96000000000001" width="46.08" height="46.08" fill="#0f172a" rx="3.84"/>
+    
+    <!-- Bottom-left corner -->
+    <rect x="57.599999999999994" y="249.60000000000002" width="76.80000000000001" height="76.80000000000001" fill="white" rx="7.68"/>
+    <rect x="72.96000000000001" y="264.96" width="46.08" height="46.08" fill="#0f172a" rx="3.84"/>
+    
+    <!-- Center pattern -->
+    <rect x="161.28" y="161.28" width="61.44" height="61.44" fill="white" rx="3.84"/>
+    
+    <!-- Decorative dots -->
+    <circle cx="161.28" cy="107.52000000000001" r="9.600000000000001" fill="white"/>
+    <circle cx="192" cy="107.52000000000001" r="9.600000000000001" fill="white"/>
+    <circle cx="222.71999999999997" cy="107.52000000000001" r="9.600000000000001" fill="white"/>
+    
+    <circle cx="161.28" cy="276.48" r="9.600000000000001" fill="white"/>
+    <circle cx="192" cy="276.48" r="9.600000000000001" fill="white"/>
+    <circle cx="222.71999999999997" cy="276.48" r="9.600000000000001" fill="white"/>
+    
+    <circle cx="107.52000000000001" cy="161.28" r="9.600000000000001" fill="white"/>
+    <circle cx="107.52000000000001" cy="192" r="9.600000000000001" fill="white"/>
+    <circle cx="107.52000000000001" cy="222.71999999999997" r="9.600000000000001" fill="white"/>
+    
+    <circle cx="276.48" cy="161.28" r="9.600000000000001" fill="white"/>
+    <circle cx="276.48" cy="192" r="9.600000000000001" fill="white"/>
+    <circle cx="276.48" cy="222.71999999999997" r="9.600000000000001" fill="white"/>
+  </g>
+</svg>

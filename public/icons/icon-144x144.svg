@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="144" height="144" viewBox="0 0 144 144" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="144" height="144" fill="#0f172a"/>
+  
+  <!-- QR-like pattern -->
+  <g opacity="0.9">
+    <!-- Top-left corner -->
+    <rect x="21.599999999999998" y="21.599999999999998" width="28.8" height="28.8" fill="white" rx="2.88"/>
+    <rect x="27.36" y="27.36" width="17.28" height="17.28" fill="#0f172a" rx="1.44"/>
+    
+    <!-- Top-right corner -->
+    <rect x="93.60000000000001" y="21.599999999999998" width="28.8" height="28.8" fill="white" rx="2.88"/>
+    <rect x="99.35999999999999" y="27.36" width="17.28" height="17.28" fill="#0f172a" rx="1.44"/>
+    
+    <!-- Bottom-left corner -->
+    <rect x="21.599999999999998" y="93.60000000000001" width="28.8" height="28.8" fill="white" rx="2.88"/>
+    <rect x="27.36" y="99.35999999999999" width="17.28" height="17.28" fill="#0f172a" rx="1.44"/>
+    
+    <!-- Center pattern -->
+    <rect x="60.48" y="60.48" width="23.04" height="23.04" fill="white" rx="1.44"/>
+    
+    <!-- Decorative dots -->
+    <circle cx="60.48" cy="40.32000000000001" r="3.6" fill="white"/>
+    <circle cx="72" cy="40.32000000000001" r="3.6" fill="white"/>
+    <circle cx="83.52" cy="40.32000000000001" r="3.6" fill="white"/>
+    
+    <circle cx="60.48" cy="103.67999999999999" r="3.6" fill="white"/>
+    <circle cx="72" cy="103.67999999999999" r="3.6" fill="white"/>
+    <circle cx="83.52" cy="103.67999999999999" r="3.6" fill="white"/>
+    
+    <circle cx="40.32000000000001" cy="60.48" r="3.6" fill="white"/>
+    <circle cx="40.32000000000001" cy="72" r="3.6" fill="white"/>
+    <circle cx="40.32000000000001" cy="83.52" r="3.6" fill="white"/>
+    
+    <circle cx="103.67999999999999" cy="60.48" r="3.6" fill="white"/>
+    <circle cx="103.67999999999999" cy="72" r="3.6" fill="white"/>
+    <circle cx="103.67999999999999" cy="83.52" r="3.6" fill="white"/>
+  </g>
+</svg>
