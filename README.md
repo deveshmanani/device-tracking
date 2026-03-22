@@ -44,6 +44,8 @@ device-tracking/
 │   ├── server/                # Server actions & RPC wrappers
 │   ├── hooks/                 # Custom React hooks
 │   └── types/                 # Shared TypeScript types
+├── supabase/                  # Supabase configuration
+│   └── migrations/            # SQL migrations
 ├── .docs/                     # Project documentation
 ├── .env.local                 # Local environment variables (gitignored)
 ├── .env.example               # Environment variable template
@@ -83,7 +85,46 @@ device-tracking/
    pnpm dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000)
+6. **Set up the database** (see [Database Setup](#database-setup) below)
+
+7. Open [http://localhost:3000](http://localhost:3000)
+
+## Database Setup
+
+The app requires running SQL migrations in your Supabase project.
+
+### Option 1: Using Supabase Dashboard (Recommended for first-time setup)
+
+1. Go to your Supabase project dashboard
+2. Navigate to **SQL Editor**
+3. Run the migrations in order:
+   - `supabase/migrations/20260322000001_initial_schema.sql`
+   - `supabase/migrations/20260322000002_role_helpers.sql`
+   - `supabase/migrations/20260322000003_rls_policies.sql`
+
+### Option 2: Using Supabase CLI
+
+```bash
+# Install Supabase CLI (if not installed)
+npm install -g supabase
+
+# Link to your project
+supabase link --project-ref your-project-ref
+
+# Run all migrations
+supabase db push
+```
+
+### Promoting First Admin User
+
+After your first user signs in:
+
+1. Open Supabase SQL Editor
+2. Run `supabase/migrations/manual_admin_promotion.sql`
+3. Update the email address in the script
+4. Execute to promote user to admin
+
+See [supabase/migrations/README.md](./supabase/migrations/README.md) for detailed migration documentation.
 
 ## Development Commands
 
@@ -109,7 +150,9 @@ Required environment variables are validated at runtime using Zod. The app will 
 ## Features (Planned)
 
 - ✅ Phase 1: Project foundation (COMPLETE)
-- ⏳ Phase 2: Database schema & security
+- ✅ Phase 2: Database schema & security (COMPLETE)
+- ✅ Phase 3: Authentication & user bootstrap (COMPLETE)
+- ⏳ Phase 4: App shell & responsive layout
 - ⏳ Phase 3: Authentication & user bootstrap
 - ⏳ Phase 4: App shell & responsive layout
 - ⏳ Phase 5: Device inventory features

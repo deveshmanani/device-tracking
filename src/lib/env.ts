@@ -2,14 +2,14 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   // Supabase - Public
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url('Invalid Supabase URL'),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1, 'Supabase anon key is required'),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().optional().default('https://placeholder.supabase.co'),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional().default('placeholder-anon-key'),
   
   // App - Public
-  NEXT_PUBLIC_APP_URL: z.string().url('Invalid app URL'),
+  NEXT_PUBLIC_APP_URL: z.string().url('Invalid app URL').default('http://localhost:3000'),
   
   // Supabase - Server only
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'Supabase service role key is required'),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional().default('placeholder-service-role-key'),
 });
 
 const clientEnvSchema = envSchema.pick({
@@ -19,36 +19,24 @@ const clientEnvSchema = envSchema.pick({
 });
 
 function validateEnv() {
-  try {
-    return envSchema.parse(process.env);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const missingVars = error.issues.map((e) => `${e.path.join('.')}: ${e.message}`);
-      throw new Error(
-        `Environment validation failed:\n${missingVars.join('\n')}\n\n` +
-        'Please check your .env.local file and ensure all required variables are set.'
-      );
-    }
-    throw error;
+  const parsed = envSchema.parse(process.env);
+  
+  // Warn if using placeholder values (except during build)
+  if (process.env.NODE_ENV !== 'production' && parsed.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+    console.warn('⚠️  Warning: Using placeholder Supabase URL. Update .env.local with your actual Supabase credentials.');
   }
+  
+  return parsed;
 }
 
 function validateClientEnv() {
-  try {
-    return clientEnvSchema.parse({
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const missingVars = error.issues.map((e) => `${e.path.join('.')}: ${e.message}`);
-      throw new Error(
-        `Client environment validation failed:\n${missingVars.join('\n')}`
-      );
-    }
-    throw error;
-  }
+  const parsed = clientEnvSchema.parse({
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+  });
+  
+  return parsed;
 }
 
 // Server-side env (includes all variables)

@@ -1,2 +1,2 @@
 // Shared type definitions and enums
-export {};
+export * from './database';
