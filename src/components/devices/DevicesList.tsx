@@ -18,11 +18,16 @@ import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select-native';
 import StatusBadge from '@/components/shared/StatusBadge';
+import StatusChangeSelect from '@/components/admin/StatusChangeSelect';
 import { Loading } from '@/components/ui/loading';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
 
-const DevicesList = () => {
+interface DevicesListProps {
+  userRole?: 'admin' | 'user';
+}
+
+const DevicesList = ({ userRole }: DevicesListProps) => {
   // URL state management with nuqs
   const [filters, setFilters] = useQueryStates({
     search: parseAsString.withDefault(''),
@@ -44,68 +49,87 @@ const DevicesList = () => {
 
   // Table columns
   const columns = useMemo<ColumnDef<DeviceListItem>[]>(
-    () => [
-      {
-        accessorKey: 'asset_tag',
-        header: 'Asset Tag',
-        cell: ({ row }) => (
-          <Link 
-            href={`/devices/${row.original.id}`}
-            className="font-mono text-sm text-primary hover:underline"
-          >
-            {row.original.asset_tag}
-          </Link>
-        ),
-      },
-      {
-        accessorKey: 'name',
-        header: 'Name',
-        cell: ({ row }) => (
-          <div>
+    () => {
+      const baseColumns: ColumnDef<DeviceListItem>[] = [
+        {
+          accessorKey: 'asset_tag',
+          header: 'Asset Tag',
+          cell: ({ row }) => (
             <Link 
               href={`/devices/${row.original.id}`}
-              className="font-medium hover:text-primary"
+              className="font-mono text-sm text-primary hover:underline"
             >
-              {row.original.name}
+              {row.original.asset_tag}
             </Link>
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'brand',
-        header: 'Brand/Model',
-        cell: ({ row }) => (
-          <div className="text-sm">
-            <div>{row.original.brand}</div>
-            <div className="text-muted-foreground">{row.original.model}</div>
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'platform',
-        header: 'Platform',
-      },
-      {
-        accessorKey: 'status',
-        header: 'Status',
-        cell: ({ row }) => <StatusBadge status={row.original.status} />,
-      },
-      {
-        accessorKey: 'current_holder',
-        header: 'Current Holder',
-        cell: ({ row }) => {
-          const holder = row.original.current_holder;
-          return holder ? (
-            <div className="text-sm">
-              {holder.full_name || holder.email}
-            </div>
-          ) : (
-            <span className="text-muted-foreground text-sm">—</span>
-          );
+          ),
         },
-      },
-    ],
-    []
+        {
+          accessorKey: 'name',
+          header: 'Name',
+          cell: ({ row }) => (
+            <div>
+              <Link 
+                href={`/devices/${row.original.id}`}
+                className="font-medium hover:text-primary"
+              >
+                {row.original.name}
+              </Link>
+            </div>
+          ),
+        },
+        {
+          accessorKey: 'brand',
+          header: 'Brand/Model',
+          cell: ({ row }) => (
+            <div className="text-sm">
+              <div>{row.original.brand}</div>
+              <div className="text-muted-foreground">{row.original.model}</div>
+            </div>
+          ),
+        },
+        {
+          accessorKey: 'platform',
+          header: 'Platform',
+        },
+        {
+          accessorKey: 'status',
+          header: 'Status',
+          cell: ({ row }) => <StatusBadge status={row.original.status} />,
+        },
+        {
+          accessorKey: 'current_holder',
+          header: 'Current Holder',
+          cell: ({ row }) => {
+            const holder = row.original.current_holder;
+            return holder ? (
+              <div className="text-sm">
+                {holder.full_name || holder.email}
+              </div>
+            ) : (
+              <span className="text-muted-foreground text-sm">—</span>
+            );
+          },
+        },
+      ];
+
+      // Add Actions column for admins
+      if (userRole === 'admin') {
+        baseColumns.push({
+          id: 'actions',
+          header: 'Actions',
+          cell: ({ row }) => (
+            <StatusChangeSelect
+              deviceId={row.original.id}
+              currentStatus={row.original.status}
+              deviceName={row.original.name}
+            />
+          ),
+        });
+      }
+
+      return baseColumns;
+    },
+    [userRole]
   );
 
   const table = useReactTable({
@@ -232,9 +256,9 @@ const DevicesList = () => {
           {/* Mobile Card View */}
           <div className="md:hidden space-y-4">
             {devices.map((device) => (
-              <Link key={device.id} href={`/devices/${device.id}`}>
-                <Card className="hover:border-primary/50 transition-colors cursor-pointer">
-                  <CardContent className="p-4">
+              <Card key={device.id} className="hover:border-primary/50 transition-colors">
+                <CardContent className="p-4">
+                  <Link href={`/devices/${device.id}`}>
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <h3 className="font-semibold">{device.name}</h3>
@@ -257,9 +281,19 @@ const DevicesList = () => {
                         </p>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                  </Link>
+                  {userRole === 'admin' && (
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <div className="text-xs text-muted-foreground mb-1">Admin Actions:</div>
+                      <StatusChangeSelect
+                        deviceId={device.id}
+                        currentStatus={device.status}
+                        deviceName={device.name}
+                      />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             ))}
           </div>
 

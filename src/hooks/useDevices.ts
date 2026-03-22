@@ -11,7 +11,7 @@ export function useDevices(filters: DeviceFilters = {}) {
   return useQuery({
     queryKey: queryKeys.devices.list(filters),
     queryFn: () => getDevices(filters),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 30 * 1000, // 30 seconds - shorter for more responsive updates
   });
 }
 

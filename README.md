@@ -158,7 +158,7 @@ Required environment variables are validated at runtime using Zod. The app will 
 - ✅ Phase 7: Assignment engine (COMPLETE)
 - ✅ Phase 8: QR scan flow (COMPLETE)
 - ✅ Phase 9: My devices & audit history (COMPLETE)
-- ⏳ Phase 10: Admin tools
+- ✅ Phase 10: Admin tools (COMPLETE)
 - ⏳ Phase 11: PWA support
 - ⏳ Phase 12: Validation & UX hardening
 

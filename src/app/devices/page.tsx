@@ -31,7 +31,7 @@ const DevicesPage = async () => {
           )}
         </div>
         
-        <DevicesList />
+        <DevicesList userRole={profile.role} />
       </div>
     </AppShell>
   );
