@@ -6,6 +6,7 @@ import { Loading } from '@/components/ui/loading';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import StatusBadge from '@/components/shared/StatusBadge';
+import QRCodePreview from '@/components/shared/QRCodePreview';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft, Edit, Calendar, User, Package } from 'lucide-react';
@@ -165,19 +166,13 @@ const DeviceDetailContent = ({ deviceId }: DeviceDetailContentProps) => {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* QR Code */}
-          <Card>
-            <CardHeader>
-              <CardTitle>QR Code</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">QR Code Coming Soon</p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-2 text-center font-mono">
-                {device.qr_code_value}
-              </p>
-            </CardContent>
-          </Card>
+          <QRCodePreview
+            deviceId={device.id}
+            deviceName={device.name}
+            assetTag={device.asset_tag}
+            showDownload
+            showPrint
+          />
 
           {/* Metadata */}
           <Card>

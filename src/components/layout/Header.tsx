@@ -19,6 +19,7 @@ const Header = ({ userRole, userName }: HeaderProps) => {
     { href: '/devices', label: 'Devices', roles: ['admin', 'standard', 'view_only'] },
     { href: '/my-devices', label: 'My Devices', roles: ['admin', 'standard'] },
     { href: '/scan', label: 'Scan QR', roles: ['admin', 'standard'] },
+    { href: '/admin/labels', label: 'Print Labels', roles: ['admin'] },
   ];
 
   const visibleNavItems = navItems.filter(item => item.roles.includes(userRole));
