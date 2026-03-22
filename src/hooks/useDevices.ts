@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getDevices, getDevicePlatforms, getDeviceBrands, type DeviceFilters } from '@/server';
+import { getDevices, getDevicePlatforms, getDeviceBrands, getDeviceById, type DeviceFilters } from '@/server';
 import { queryKeys } from '@/lib/query/keys';
 
 /**
@@ -12,6 +12,17 @@ export function useDevices(filters: DeviceFilters = {}) {
     queryKey: queryKeys.devices.list(filters),
     queryFn: () => getDevices(filters),
     staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+}
+
+/**
+ * Hook to fetch a single device by ID
+ */
+export function useDevice(id: string) {
+  return useQuery({
+    queryKey: queryKeys.devices.detail(id),
+    queryFn: () => getDeviceById(id),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 

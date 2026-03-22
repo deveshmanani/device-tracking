@@ -19,6 +19,91 @@ export interface DeviceListItem extends Omit<Device, 'condition_note' | 'image_u
   };
 }
 
+export interface DeviceDetail extends Device {
+  current_holder?: {
+    id: string;
+    full_name: string | null;
+    email: string;
+  };
+  creator?: {
+    full_name: string | null;
+    email: string;
+  };
+}
+
+/**
+ * Get a single device by ID with full details
+ */
+export async function getDeviceById(id: string): Promise<DeviceDetail> {
+  await requireAuth();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('devices')
+    .select(`
+      *,
+      device_assignments!device_assignments_device_id_fkey (
+        user_id,
+        profiles:user_id (
+          id,
+          full_name,
+          email
+        )
+      ),
+      creator:profiles!devices_created_by_fkey (
+        full_name,
+        email
+      )
+    `)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching device:', error);
+    throw new Error('Device not found');
+  }
+
+  // Find active assignment
+  const activeAssignment = Array.isArray(data.device_assignments)
+    ? data.device_assignments.find((assignment: any) => !assignment.returned_at)
+    : null;
+
+  const device: DeviceDetail = {
+    id: data.id,
+    name: data.name,
+    brand: data.brand,
+    model: data.model,
+    platform: data.platform,
+    os_version: data.os_version,
+    serial_number: data.serial_number,
+    imei: data.imei,
+    asset_tag: data.asset_tag,
+    status: data.status,
+    condition_note: data.condition_note,
+    location_name: data.location_name,
+    image_url: data.image_url,
+    qr_code_value: data.qr_code_value,
+    created_by: data.created_by,
+    created_at: data.created_at,
+    updated_at: data.updated_at,
+    current_holder: activeAssignment?.profiles
+      ? {
+          id: activeAssignment.profiles.id,
+          full_name: activeAssignment.profiles.full_name,
+          email: activeAssignment.profiles.email,
+        }
+      : undefined,
+    creator: data.creator
+      ? {
+          full_name: data.creator.full_name,
+          email: data.creator.email,
+        }
+      : undefined,
+  };
+
+  return device;
+}
+
 /**
  * Get paginated list of devices with filters
  */
