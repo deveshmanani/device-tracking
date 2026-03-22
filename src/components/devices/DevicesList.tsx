@@ -15,12 +15,12 @@ import {
 import type { DeviceListItem } from '@/server/devices';
 import type { DeviceStatus } from '@/types/database';
 import Link from 'next/link';
-import Input from '@/components/ui/Input';
-import Select from '@/components/ui/Select';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select-native';
 import StatusBadge from '@/components/shared/StatusBadge';
-import Loading from '@/components/ui/Loading';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Loading } from '@/components/ui/loading';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent } from '@/components/ui/card';
 
 const DevicesList = () => {
   // URL state management with nuqs
@@ -143,7 +143,7 @@ const DevicesList = () => {
             <div>
               <Select
                 value={filters.status}
-                onChange={(e) => setFilters({ status: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilters({ status: e.target.value })}
               >
                 <option value="">All Statuses</option>
                 <option value="available">Available</option>
@@ -156,7 +156,7 @@ const DevicesList = () => {
             <div>
               <Select
                 value={filters.platform}
-                onChange={(e) => setFilters({ platform: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilters({ platform: e.target.value })}
               >
                 <option value="">All Platforms</option>
                 {platforms?.map((platform) => (
@@ -169,7 +169,7 @@ const DevicesList = () => {
             <div>
               <Select
                 value={filters.brand}
-                onChange={(e) => setFilters({ brand: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilters({ brand: e.target.value })}
               >
                 <option value="">All Brands</option>
                 {brands?.map((brand) => (

@@ -1,4 +1,4 @@
-import Badge from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import type { DeviceStatus } from '@/types/database';
 
 interface StatusBadgeProps {

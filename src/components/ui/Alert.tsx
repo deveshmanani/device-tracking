@@ -1,52 +1,76 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
-interface AlertProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'success' | 'warning' | 'destructive';
-  children: ReactNode;
-}
+import { cn } from "@/lib/utils"
 
-const Alert = ({ variant = 'default', children, className = '', ...props }: AlertProps) => {
-  const variantClasses = {
-    default: 'bg-background text-foreground border-border',
-    success: 'bg-success/10 text-success-foreground border-success/20',
-    warning: 'bg-warning/10 text-warning-foreground border-warning/20',
-    destructive: 'bg-destructive/10 text-destructive-foreground border-destructive/20',
-  };
+const alertVariants = cva(
+  "group/alert relative grid w-full gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default: "bg-card text-card-foreground",
+        destructive:
+          "bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
 
+function Alert({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
   return (
     <div
-      className={`relative w-full rounded-lg border p-4 ${variantClasses[variant]} ${className}`}
+      data-slot="alert"
       role="alert"
+      className={cn(alertVariants({ variant }), className)}
       {...props}
-    >
-      {children}
-    </div>
-  );
-};
-
-interface AlertTitleProps extends HTMLAttributes<HTMLHeadingElement> {
-  children: ReactNode;
+    />
+  )
 }
 
-const AlertTitle = ({ children, className = '', ...props }: AlertTitleProps) => {
+function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <h5 className={`mb-1 font-medium leading-none tracking-tight ${className}`} {...props}>
-      {children}
-    </h5>
-  );
-};
-
-interface AlertDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
-  children: ReactNode;
+    <div
+      data-slot="alert-title"
+      className={cn(
+        "font-heading font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-const AlertDescription = ({ children, className = '', ...props }: AlertDescriptionProps) => {
+function AlertDescription({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
-    <div className={`text-sm [&_p]:leading-relaxed ${className}`} {...props}>
-      {children}
-    </div>
-  );
-};
+    <div
+      data-slot="alert-description"
+      className={cn(
+        "text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-export { Alert, AlertTitle, AlertDescription };
-export default Alert;
+function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="alert-action"
+      className={cn("absolute top-2 right-2", className)}
+      {...props}
+    />
+  )
+}
+
+export { Alert, AlertTitle, AlertDescription, AlertAction }

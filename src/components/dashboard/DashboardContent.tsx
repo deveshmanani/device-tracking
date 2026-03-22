@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useDashboardStats, useRecentDevices } from '@/hooks/useDashboard';
 import StatCard from '@/components/shared/StatCard';
 import StatusBadge from '@/components/shared/StatusBadge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import Loading from '@/components/ui/Loading';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loading } from '@/components/ui/loading';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const DashboardContent = () => {
   const { data: stats, isLoading: statsLoading, error: statsError } = useDashboardStats();
