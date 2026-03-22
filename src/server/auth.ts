@@ -1,3 +1,5 @@
+'use server';
+
 import { createAdminClient } from '@/lib/supabase/server';
 import type { User } from '@supabase/supabase-js';
 
@@ -45,8 +47,6 @@ export async function bootstrapProfile(user: User) {
  * Sign out the current user
  */
 export async function signOut() {
-  'use server';
-  
   const { createClient } = await import('@/lib/supabase/server');
   const supabase = await createClient();
   
