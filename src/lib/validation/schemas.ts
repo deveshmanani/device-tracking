@@ -25,13 +25,32 @@ export const deviceSchema = z.object({
     .regex(/^[A-Z0-9-]+$/, 'Asset tag must contain only uppercase letters, numbers, and hyphens'),
   
   serial_number: z.string()
-    .min(1, 'Serial number is required')
     .max(100, 'Serial number must be less than 100 characters')
-    .trim(),
+    .trim()
+    .optional()
+    .or(z.literal('')),
+  
+  imei: z.string()
+    .max(50, 'IMEI must be less than 50 characters')
+    .trim()
+    .optional()
+    .or(z.literal('')),
   
   platform: z.enum(['iOS', 'Android', 'Windows', 'macOS', 'Linux', 'Other'], {
     message: 'Please select a valid platform',
   }),
+  
+  os_version: z.string()
+    .max(50, 'OS version must be less than 50 characters')
+    .trim()
+    .optional()
+    .or(z.literal('')),
+  
+  location_name: z.string()
+    .max(100, 'Location must be less than 100 characters')
+    .trim()
+    .optional()
+    .or(z.literal('')),
   
   purchase_date: z.string()
     .min(1, 'Purchase date is required')
@@ -52,6 +71,11 @@ export const deviceSchema = z.object({
   
   notes: z.string()
     .max(500, 'Notes must be less than 500 characters')
+    .optional()
+    .or(z.literal('')),
+  
+  condition_note: z.string()
+    .max(500, 'Condition notes must be less than 500 characters')
     .optional()
     .or(z.literal('')),
 });

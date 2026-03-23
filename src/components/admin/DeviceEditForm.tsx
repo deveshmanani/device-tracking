@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loading } from '@/components/ui/loading';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import type { DeviceStatus } from '@/types/database';
 
 interface DeviceEditFormProps {
@@ -65,8 +65,16 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
         await updateDevice(deviceId, input);
         router.push(`/devices/${deviceId}`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to update device');
+        // Display the error message from the server
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'An unexpected error occurred while updating the device';
+        
+        setError(errorMessage);
         setIsSubmitting(false);
+        
+        // Scroll to top to show error
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
   });
@@ -124,8 +132,11 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
           className="space-y-6"
         >
           {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="ml-2">
+                <strong>Error: </strong>{error}
+              </AlertDescription>
             </Alert>
           )}
 

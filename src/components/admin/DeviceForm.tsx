@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 const DeviceForm = () => {
   const router = useRouter();
@@ -53,17 +53,28 @@ const DeviceForm = () => {
           platform: validated.platform,
           asset_tag: validated.asset_tag,
           serial_number: validated.serial_number || undefined,
+          os_version: validated.os_version || undefined,
+          imei: validated.imei || undefined,
+          location_name: validated.location_name || undefined,
           purchase_date: validated.purchase_date || undefined,
           warranty_expiry: validated.warranty_expiry || undefined,
           image_url: validated.image_url || undefined,
-          condition_note: validated.notes || undefined,
+          condition_note: validated.condition_note || undefined,
         };
 
         const result = await createDevice(input);
         router.push(`/devices/${result.id}`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to create device');
+        // Display the error message from the server or validation
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'An unexpected error occurred while creating the device';
+        
+        setError(errorMessage);
         setIsSubmitting(false);
+        
+        // Scroll to top to show error
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
   });
@@ -83,8 +94,11 @@ const DeviceForm = () => {
           className="space-y-6"
         >
           {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="ml-2">
+                <strong>Error: </strong>{error}
+              </AlertDescription>
             </Alert>
           )}
 

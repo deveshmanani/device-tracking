@@ -57,7 +57,25 @@ export async function createDevice(input: CreateDeviceInput): Promise<{ id: stri
 
   if (error) {
     console.error('Error creating device:', error);
-    throw new Error('Failed to create device');
+    
+    // Pass through detailed error information
+    let errorMessage = 'Failed to create device';
+    
+    if (error.code === '23505') {
+      // Unique constraint violation
+      const detail = error.details || error.message;
+      errorMessage = `Duplicate entry: ${detail}`;
+    } else if (error.code === '23503') {
+      // Foreign key violation
+      errorMessage = `Invalid reference: ${error.message}`;
+    } else if (error.code === '42703') {
+      // Undefined column
+      errorMessage = `Database schema error: ${error.message}`;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    throw new Error(errorMessage);
   }
 
   // Create device_created event
@@ -138,7 +156,25 @@ export async function updateDevice(
 
   if (error) {
     console.error('Error updating device:', error);
-    throw new Error('Failed to update device');
+    
+    // Pass through detailed error information
+    let errorMessage = 'Failed to update device';
+    
+    if (error.code === '23505') {
+      // Unique constraint violation
+      const detail = error.details || error.message;
+      errorMessage = `Duplicate entry: ${detail}`;
+    } else if (error.code === '23503') {
+      // Foreign key violation
+      errorMessage = `Invalid reference: ${error.message}`;
+    } else if (error.code === '42703') {
+      // Undefined column
+      errorMessage = `Database schema error: ${error.message}`;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    throw new Error(errorMessage);
   }
 
   // Create device_updated event
