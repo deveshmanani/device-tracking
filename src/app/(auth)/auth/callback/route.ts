@@ -18,10 +18,24 @@ export async function GET(request: Request) {
       if (user) {
         // Bootstrap profile if this is first login
         await bootstrapProfile(user);
+        
+        // Get user profile to check role
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        
+        // Redirect based on role
+        if (profile?.role === 'admin') {
+          return NextResponse.redirect(`${origin}/`);
+        } else {
+          return NextResponse.redirect(`${origin}/devices`);
+        }
       }
     }
   }
 
-  // Redirect to home page
-  return NextResponse.redirect(`${origin}/`);
+  // Default redirect to devices page
+  return NextResponse.redirect(`${origin}/devices`);
 }

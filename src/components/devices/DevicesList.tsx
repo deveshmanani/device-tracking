@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { parseAsString, useQueryStates } from 'nuqs';
 import { useDevices, useDevicePlatforms, useDeviceBrands } from '@/hooks/useDevices';
 import { 
@@ -25,6 +25,23 @@ import { Card, CardContent } from '@/components/ui/card';
 import { DeviceListSkeleton } from '@/components/shared/Skeletons';
 import { NoDevicesFound, ErrorState } from '@/components/shared/EmptyStates';
 
+// Custom debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 interface DevicesListProps {
   userRole?: 'admin' | 'user';
 }
@@ -37,6 +54,24 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
     platform: parseAsString.withDefault(''),
     brand: parseAsString.withDefault(''),
   });
+
+  // Local state for search input (for immediate UI feedback)
+  const [searchInput, setSearchInput] = useState(filters.search);
+  
+  // Debounce search input (500ms delay)
+  const debouncedSearch = useDebounce(searchInput, 500);
+  
+  // Update URL when debounced search changes
+  useEffect(() => {
+    if (debouncedSearch !== filters.search) {
+      setFilters({ search: debouncedSearch });
+    }
+  }, [debouncedSearch]);
+  
+  // Sync local search input when URL changes (e.g., browser back/forward)
+  useEffect(() => {
+    setSearchInput(filters.search);
+  }, [filters.search]);
 
   // Fetch data
   const { data: devices, isLoading, error } = useDevices({
@@ -142,20 +177,6 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  if (error) {
-    return (
-      <ErrorState
-        title="Failed to load devices"
-        description={error.message || 'An unexpected error occurred while loading devices.'}
-        onRetry={() => window.location.reload()}
-      />
-    );
-  }
-
-  if (isLoading) {
-    return <DeviceListSkeleton />;
-  }
-
   const hasActiveFilters = filters.search || filters.status || filters.platform || filters.brand;
 
   return (
@@ -167,8 +188,8 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
             <div>
               <Input
                 placeholder="Search devices..."
-                value={filters.search}
-                onChange={(e) => setFilters({ search: e.target.value })}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
             <div>
@@ -214,8 +235,14 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
         </CardContent>
       </Card>
 
-      {/* Table */}
-      {isLoading ? (
+      {/* Table - Show loading, error, or data states */}
+      {error ? (
+        <ErrorState
+          title="Failed to load devices"
+          description={error.message || 'An unexpected error occurred while loading devices.'}
+          onRetry={() => window.location.reload()}
+        />
+      ) : isLoading ? (
         <DeviceListSkeleton />
       ) : devices && devices.length > 0 ? (
         <>

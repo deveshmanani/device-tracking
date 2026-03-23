@@ -1,20 +1,9 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const DeviceListSkeleton = () => {
   return (
     <div className="space-y-4">
-      {/* Filters skeleton */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-10 w-full" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Desktop table skeleton */}
       <div className="hidden md:block rounded-md border border-border overflow-hidden">
         <table className="w-full">
@@ -126,7 +115,10 @@ export const DashboardSkeleton = () => {
         <CardContent className="p-6 space-y-4">
           <Skeleton className="h-6 w-48" />
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex items-center justify-between border-b border-border pb-3 last:border-0">
+            <div
+              key={i}
+              className="flex items-center justify-between border-b border-border pb-3 last:border-0"
+            >
               <div className="space-y-2 flex-1">
                 <Skeleton className="h-4 w-3/4" />
                 <Skeleton className="h-3 w-1/2" />

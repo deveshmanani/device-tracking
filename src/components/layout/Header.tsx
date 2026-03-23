@@ -15,7 +15,7 @@ const Header = ({ userRole, userName }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { href: '/', label: 'Dashboard', roles: ['admin', 'standard', 'view_only'] },
+    { href: '/', label: 'Dashboard', roles: ['admin'] },
     { href: '/devices', label: 'Devices', roles: ['admin', 'standard', 'view_only'] },
     { href: '/my-devices', label: 'My Devices', roles: ['admin', 'standard'] },
     { href: '/scan', label: 'Scan QR', roles: ['admin', 'standard'] },
