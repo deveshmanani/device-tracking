@@ -15,7 +15,7 @@ const NewDevicePage = async () => {
     >
       <div className="space-y-6 max-w-2xl">
         <div className="flex items-center gap-4">
-          <Link href="/admin/devices">
+          <Link href="/devices">
             <Button variant="outline" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back

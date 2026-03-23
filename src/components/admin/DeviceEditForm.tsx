@@ -345,7 +345,7 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.back()}
+              onClick={() => router.push(`/devices/${deviceId}`)}
               disabled={isSubmitting}
             >
               Cancel

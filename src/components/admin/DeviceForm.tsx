@@ -92,7 +92,18 @@ const DeviceForm = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Basic Information</h3>
             
-            <form.Field name="name">
+            <form.Field 
+              name="name"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = deviceSchema.shape.name.safeParse(value);
+                  if (!result.success) {
+                    return result.error.issues[0]?.message || 'Invalid value';
+                  }
+                  return undefined;
+                },
+              }}
+            >
               {(field) => (
                 <div>
                   <Label htmlFor="name">Device Name *</Label>
@@ -103,12 +114,26 @@ const DeviceForm = () => {
                     onBlur={field.handleBlur}
                     placeholder="e.g., iPhone 15 Pro"
                   />
+                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                  )}
                 </div>
               )}
             </form.Field>
 
             <div className="grid grid-cols-2 gap-4">
-              <form.Field name="brand">
+              <form.Field 
+                name="brand"
+                validators={{
+                  onChange: ({ value }) => {
+                    const result = deviceSchema.shape.brand.safeParse(value);
+                    if (!result.success) {
+                      return result.error.issues[0]?.message || 'Invalid value';
+                    }
+                    return undefined;
+                  },
+                }}
+              >
                 {(field) => (
                   <div>
                     <Label htmlFor="brand">Brand *</Label>
@@ -119,11 +144,25 @@ const DeviceForm = () => {
                       onBlur={field.handleBlur}
                       placeholder="e.g., Apple"
                     />
+                    {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                      <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                    )}
                   </div>
                 )}
               </form.Field>
 
-              <form.Field name="model">
+              <form.Field 
+                name="model"
+                validators={{
+                  onChange: ({ value }) => {
+                    const result = deviceSchema.shape.model.safeParse(value);
+                    if (!result.success) {
+                      return result.error.issues[0]?.message || 'Invalid value';
+                    }
+                    return undefined;
+                  },
+                }}
+              >
                 {(field) => (
                   <div>
                     <Label htmlFor="model">Model *</Label>
@@ -134,6 +173,9 @@ const DeviceForm = () => {
                       onBlur={field.handleBlur}
                       placeholder="e.g., iPhone 15 Pro"
                     />
+                    {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                      <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                    )}
                   </div>
                 )}
               </form.Field>
@@ -158,6 +200,9 @@ const DeviceForm = () => {
                       <option value="Linux">Linux</option>
                       <option value="Other">Other</option>
                     </Select>
+                    {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                      <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                    )}
                   </div>
                 )}
               </form.Field>
@@ -177,7 +222,18 @@ const DeviceForm = () => {
               </form.Field>
             </div>
 
-            <form.Field name="asset_tag">
+            <form.Field 
+              name="asset_tag"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = deviceSchema.shape.asset_tag.safeParse(value);
+                  if (!result.success) {
+                    return result.error.issues[0]?.message || 'Invalid value';
+                  }
+                  return undefined;
+                },
+              }}
+            >
               {(field) => (
                 <div>
                   <Label htmlFor="asset_tag">Asset Tag *</Label>
@@ -188,6 +244,9 @@ const DeviceForm = () => {
                     onBlur={field.handleBlur}
                     placeholder="e.g., ASSET-001"
                   />
+                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                  )}
                 </div>
               )}
             </form.Field>
@@ -207,6 +266,9 @@ const DeviceForm = () => {
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Optional"
                   />
+                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                  )}
                 </div>
               )}
             </form.Field>
@@ -221,6 +283,9 @@ const DeviceForm = () => {
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Optional"
                   />
+                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                  )}
                 </div>
               )}
             </form.Field>
@@ -240,6 +305,9 @@ const DeviceForm = () => {
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="e.g., Office - IT Desk"
                   />
+                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                  )}
                 </div>
               )}
             </form.Field>
@@ -255,6 +323,9 @@ const DeviceForm = () => {
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="https://example.com/image.jpg"
                   />
+                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                  )}
                   <p className="text-xs text-muted-foreground mt-1">
                     External URL to device image
                   </p>
@@ -273,6 +344,9 @@ const DeviceForm = () => {
                     placeholder="Describe the device condition..."
                     rows={3}
                   />
+                  {field.state.meta.errors && field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive mt-1">{field.state.meta.errors[0]}</p>
+                  )}
                 </div>
               )}
             </form.Field>
@@ -283,7 +357,7 @@ const DeviceForm = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.back()}
+              onClick={() => router.push('/devices')}
               disabled={isSubmitting}
             >
               Cancel
