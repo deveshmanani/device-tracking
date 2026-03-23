@@ -239,10 +239,15 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
                       onChange={(e) => field.handleChange(e.target.value as DeviceStatus)}
                     >
                       <option value="available">Available</option>
-                      <option value="checked_out">Checked Out</option>
                       <option value="in_repair">In Repair</option>
                       <option value="retired">Retired</option>
                       <option value="lost">Lost</option>
+                      {/* checked_out is not selectable - only via scan flow */}
+                      {field.state.value === 'checked_out' && (
+                        <option value="checked_out" disabled>
+                          Booked (use return flow)
+                        </option>
+                      )}
                     </Select>
                   </div>
                 )}

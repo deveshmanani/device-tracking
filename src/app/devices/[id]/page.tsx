@@ -15,7 +15,7 @@ const DeviceDetailPage = async ({ params }: DeviceDetailPageProps) => {
       userRole={profile.role} 
       userName={profile.full_name || profile.email}
     >
-      <DeviceDetailContent deviceId={id} />
+      <DeviceDetailContent deviceId={id} userRole={profile.role} />
     </AppShell>
   );
 };

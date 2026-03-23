@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import type { DeviceStatus } from '@/types/database';
+import { statusTransitionSchema } from '@/lib/validation/schemas';
 
 /**
  * Change device status (Admin only)
@@ -14,6 +15,17 @@ export async function changeDeviceStatus(
   newStatus: DeviceStatus
 ): Promise<{ success: boolean; message: string }> {
   const { user } = await requireAdmin();
+  
+  // Validate input
+  try {
+    statusTransitionSchema.parse({ deviceId, newStatus });
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Validation failed: ${error.issues?.[0]?.message || error.message}`,
+    };
+  }
+  
   const supabase = createAdminClient();
 
   try {
@@ -78,7 +90,7 @@ export async function changeDeviceStatus(
         await supabase.from('device_events').insert({
           device_id: deviceId,
           event_type: 'returned',
-          performed_by: user.id,
+          actor_user_id: user.id,
           metadata: {
             assignment_id: activeAssignment.id,
             returned_by_admin: true,
@@ -106,7 +118,7 @@ export async function changeDeviceStatus(
     await supabase.from('device_events').insert({
       device_id: deviceId,
       event_type: 'status_changed',
-      performed_by: user.id,
+      actor_user_id: user.id,
       metadata: {
         old_status: oldStatus,
         new_status: newStatus,

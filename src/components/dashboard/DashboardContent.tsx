@@ -42,7 +42,7 @@ const DashboardContent = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <StatCard title="Total Devices" value={stats.total} variant="primary" />
             <StatCard title="Available" value={stats.available} variant="success" />
-            <StatCard title="Checked Out" value={stats.checked_out} variant="default" />
+            <StatCard title="Booked" value={stats.checked_out} variant="default" />
             <StatCard title="In Repair" value={stats.in_repair} variant="warning" />
             <StatCard title="Retired" value={stats.retired} variant="default" />
             <StatCard title="Lost" value={stats.lost} variant="destructive" />

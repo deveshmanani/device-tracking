@@ -22,6 +22,8 @@ import StatusChangeSelect from '@/components/admin/StatusChangeSelect';
 import { Loading } from '@/components/ui/loading';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
+import { DeviceListSkeleton } from '@/components/shared/Skeletons';
+import { NoDevicesFound, ErrorState } from '@/components/shared/EmptyStates';
 
 interface DevicesListProps {
   userRole?: 'admin' | 'user';
@@ -142,14 +144,19 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
 
   if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertTitle>Error loading devices</AlertTitle>
-        <AlertDescription>
-          {error.message || 'An unexpected error occurred'}
-        </AlertDescription>
-      </Alert>
+      <ErrorState
+        title="Failed to load devices"
+        description={error.message || 'An unexpected error occurred while loading devices.'}
+        onRetry={() => window.location.reload()}
+      />
     );
   }
+
+  if (isLoading) {
+    return <DeviceListSkeleton />;
+  }
+
+  const hasActiveFilters = filters.search || filters.status || filters.platform || filters.brand;
 
   return (
     <div className="space-y-4">
@@ -171,7 +178,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
               >
                 <option value="">All Statuses</option>
                 <option value="available">Available</option>
-                <option value="checked_out">Checked Out</option>
+                <option value="checked_out">Booked</option>
                 <option value="in_repair">In Repair</option>
                 <option value="retired">Retired</option>
                 <option value="lost">Lost</option>
@@ -209,11 +216,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
 
       {/* Table */}
       {isLoading ? (
-        <Card>
-          <CardContent className="p-6">
-            <Loading />
-          </CardContent>
-        </Card>
+        <DeviceListSkeleton />
       ) : devices && devices.length > 0 ? (
         <>
           {/* Desktop Table */}
@@ -302,11 +305,10 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
           </div>
         </>
       ) : (
-        <Card>
-          <CardContent className="p-6 text-center text-muted-foreground">
-            No devices found matching your filters.
-          </CardContent>
-        </Card>
+        <NoDevicesFound 
+          hasFilters={!!hasActiveFilters}
+          onClearFilters={() => setFilters({ search: '', status: '', platform: '', brand: '' })}
+        />
       )}
     </div>
   );

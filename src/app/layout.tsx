@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Geist } from 'next/font/google';
 import './globals.css';
 import Providers from './Providers';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -47,7 +48,9 @@ const RootLayout = ({
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <TooltipProvider>
+          <Providers>{children}</Providers>
+        </TooltipProvider>
       </body>
     </html>
   );

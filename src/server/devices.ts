@@ -24,6 +24,7 @@ export interface DeviceDetail extends Device {
     id: string;
     full_name: string | null;
     email: string;
+    assigned_at: string;
   };
   creator?: {
     full_name: string | null;
@@ -45,6 +46,7 @@ export async function getDeviceById(id: string): Promise<DeviceDetail> {
       device_assignments!device_assignments_device_id_fkey (
         user_id,
         returned_at,
+        assigned_at,
         profiles:user_id (
           id,
           full_name,
@@ -92,6 +94,7 @@ export async function getDeviceById(id: string): Promise<DeviceDetail> {
           id: activeAssignment.profiles.id,
           full_name: activeAssignment.profiles.full_name,
           email: activeAssignment.profiles.email,
+          assigned_at: activeAssignment.assigned_at,
         }
       : undefined,
     creator: data.creator

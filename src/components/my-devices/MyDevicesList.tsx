@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Loading } from '@/components/ui/loading';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import StatusBadge from '@/components/shared/StatusBadge';
+import { NoMyDevicesFound, ErrorState } from '@/components/shared/EmptyStates';
 import Link from 'next/link';
 import { Package, Calendar, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
@@ -31,9 +32,15 @@ const MyDevicesList = () => {
       const result = await returnDevice(deviceId);
       
       if (result.success) {
-        // Invalidate queries to refresh data
-        queryClient.invalidateQueries({ queryKey: queryKeys.myDevices.all });
-        queryClient.invalidateQueries({ queryKey: ['devices'] });
+        // Invalidate queries to refresh data immediately
+        await queryClient.invalidateQueries({ 
+          queryKey: queryKeys.myDevices.all,
+          refetchType: 'active'
+        });
+        await queryClient.invalidateQueries({ 
+          queryKey: queryKeys.devices.all,
+          refetchType: 'active'
+        });
       } else {
         setReturnError(result.message);
       }
@@ -43,6 +50,16 @@ const MyDevicesList = () => {
       setReturningDeviceId(null);
     }
   };
+
+  if (error) {
+    return (
+      <ErrorState
+        title="Failed to load your devices"
+        description={error.message || 'An unexpected error occurred while loading your devices.'}
+        onRetry={() => window.location.reload()}
+      />
+    );
+  }
 
   if (isLoading) {
     return (
@@ -54,31 +71,8 @@ const MyDevicesList = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>Failed to load your devices: {error.message}</AlertDescription>
-      </Alert>
-    );
-  }
-
   if (!assignments || assignments.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-12">
-          <div className="text-center">
-            <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Devices Assigned</h3>
-            <p className="text-muted-foreground mb-4">
-              You don't have any devices assigned to you at the moment.
-            </p>
-            <Link href="/scan">
-              <Button>Scan QR to Assign Device</Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <NoMyDevicesFound />;
   }
 
   return (

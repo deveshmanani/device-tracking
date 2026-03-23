@@ -68,10 +68,10 @@ export async function getDeviceEvents(deviceId: string): Promise<DeviceEvent[]> 
     .select(`
       id,
       event_type,
-      performed_by,
+      actor_user_id,
       created_at,
       metadata,
-      actor:profiles!device_events_performed_by_fkey (
+      actor:profiles!device_events_actor_user_id_fkey (
         id,
         full_name,
         email
@@ -89,7 +89,7 @@ export async function getDeviceEvents(deviceId: string): Promise<DeviceEvent[]> 
   return (data || []).map((item: any) => ({
     id: item.id,
     event_type: item.event_type,
-    performed_by: item.performed_by,
+    performed_by: item.actor_user_id, // Map to expected field name
     created_at: item.created_at,
     metadata: item.metadata,
     actor: Array.isArray(item.actor) ? item.actor[0] : item.actor,

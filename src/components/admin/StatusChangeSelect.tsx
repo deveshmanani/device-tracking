@@ -16,7 +16,7 @@ interface StatusChangeSelectProps {
 
 const statusLabels: Record<DeviceStatus, string> = {
   available: "Available",
-  checked_out: "Checked Out",
+  checked_out: "Booked",
   in_repair: "In Repair",
   retired: "Retired",
   lost: "Lost",
@@ -49,12 +49,17 @@ const StatusChangeSelect = ({
       const result = await changeDeviceStatus(deviceId, newStatus);
 
       if (result.success) {
-        // Invalidate queries to refresh data
-        queryClient.invalidateQueries({ queryKey: queryKeys.devices.all });
-        queryClient.invalidateQueries({ queryKey: ["devices"] });
+        // Invalidate queries to refresh data immediately
+        await queryClient.invalidateQueries({ 
+          queryKey: queryKeys.devices.all,
+          refetchType: 'active' // Force immediate refetch of active queries
+        });
+        await queryClient.invalidateQueries({ 
+          queryKey: queryKeys.myDevices.all,
+          refetchType: 'active'
+        });
       } else {
         setError(result.message);
-        // Reset select to current status on error
         setTimeout(() => setError(null), 5000);
       }
     } catch (err: any) {
@@ -81,7 +86,7 @@ const StatusChangeSelect = ({
           {/* checked_out is not selectable - only via assignment */}
           {currentStatus === "checked_out" && (
             <option value="checked_out" disabled>
-              Checked Out (use return flow)
+              Booked (use return flow)
             </option>
           )}
         </Select>

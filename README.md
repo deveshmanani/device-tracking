@@ -160,7 +160,7 @@ Required environment variables are validated at runtime using Zod. The app will 
 - ✅ Phase 9: My devices & audit history (COMPLETE)
 - ✅ Phase 10: Admin tools (COMPLETE)
 - ✅ Phase 11: PWA support (COMPLETE)
-- ⏳ Phase 12: Validation & UX hardening
+- ✅ Phase 12: Validation & UX hardening (COMPLETE - Tasks 12.1 & 12.2)
 
 ## License
 

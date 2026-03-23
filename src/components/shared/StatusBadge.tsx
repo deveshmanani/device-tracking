@@ -7,7 +7,7 @@ interface StatusBadgeProps {
 
 const statusConfig: Record<DeviceStatus, { label: string; variant: 'default' | 'success' | 'warning' | 'destructive' | 'secondary' }> = {
   available: { label: 'Available', variant: 'success' },
-  checked_out: { label: 'Checked Out', variant: 'default' },
+  checked_out: { label: 'Booked', variant: 'default' },
   in_repair: { label: 'In Repair', variant: 'warning' },
   retired: { label: 'Retired', variant: 'secondary' },
   lost: { label: 'Lost', variant: 'destructive' },

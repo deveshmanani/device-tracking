@@ -11,7 +11,6 @@ export function useDevices(filters: DeviceFilters = {}) {
   return useQuery({
     queryKey: queryKeys.devices.list(filters),
     queryFn: () => getDevices(filters),
-    staleTime: 30 * 1000, // 30 seconds - shorter for more responsive updates
   });
 }
 
@@ -22,7 +21,6 @@ export function useDevice(id: string) {
   return useQuery({
     queryKey: queryKeys.devices.detail(id),
     queryFn: () => getDeviceById(id),
-    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -33,7 +31,6 @@ export function useDevicePlatforms() {
   return useQuery({
     queryKey: ['device-platforms'],
     queryFn: () => getDevicePlatforms(),
-    staleTime: 10 * 60 * 1000, // 10 minutes
   });
 }
 
@@ -44,6 +41,5 @@ export function useDeviceBrands() {
   return useQuery({
     queryKey: ['device-brands'],
     queryFn: () => getDeviceBrands(),
-    staleTime: 10 * 60 * 1000, // 10 minutes
   });
 }

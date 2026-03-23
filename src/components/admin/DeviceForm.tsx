@@ -1,8 +1,9 @@
 'use client';
 
 import { useForm } from '@tanstack/react-form';
-import { z } from 'zod';
+import { zodValidator } from '@tanstack/zod-form-adapter';
 import { createDevice, type CreateDeviceInput } from '@/server';
+import { deviceSchema, type DeviceFormData } from '@/lib/validation/schemas';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,22 +15,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
-const deviceSchema = z.object({
-  name: z.string().min(1, 'Device name is required'),
-  brand: z.string().min(1, 'Brand is required'),
-  model: z.string().min(1, 'Model is required'),
-  platform: z.string().min(1, 'Platform is required'),
-  os_version: z.string().optional(),
-  serial_number: z.string().optional(),
-  imei: z.string().optional(),
-  asset_tag: z.string().min(1, 'Asset tag is required'),
-  condition_note: z.string().optional(),
-  location_name: z.string().optional(),
-  image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-});
-
-type DeviceFormData = z.infer<typeof deviceSchema>;
-
 const DeviceForm = () => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -40,21 +25,21 @@ const DeviceForm = () => {
       name: '',
       brand: '',
       model: '',
-      platform: 'iOS',
-      os_version: '',
+      platform: 'iOS' as const,
       serial_number: '',
-      imei: '',
       asset_tag: '',
-      condition_note: '',
-      location_name: '',
+      purchase_date: new Date().toISOString().split('T')[0],
+      warranty_expiry: '',
       image_url: '',
+      notes: '',
     } as DeviceFormData,
+    validatorAdapter: zodValidator(),
     onSubmit: async ({ value }) => {
       setError(null);
       setIsSubmitting(true);
 
       try {
-        // Validate with Zod
+        // Validate with centralized Zod schema
         const validated = deviceSchema.parse(value);
         
         // Clean up empty strings to undefined
@@ -64,12 +49,11 @@ const DeviceForm = () => {
           model: validated.model,
           platform: validated.platform,
           asset_tag: validated.asset_tag,
-          os_version: validated.os_version || undefined,
           serial_number: validated.serial_number || undefined,
-          imei: validated.imei || undefined,
-          condition_note: validated.condition_note || undefined,
-          location_name: validated.location_name || undefined,
+          purchase_date: validated.purchase_date || undefined,
+          warranty_expiry: validated.warranty_expiry || undefined,
           image_url: validated.image_url || undefined,
+          condition_note: validated.notes || undefined,
         };
 
         const result = await createDevice(input);

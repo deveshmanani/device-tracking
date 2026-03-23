@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { requireAuth, requireAdmin } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+import { assignmentSchema, returnSchema, adminAssignmentSchema } from '@/lib/validation/schemas';
 
 /**
  * Assign a device to the current user (self-assignment)
@@ -10,6 +11,17 @@ import { revalidatePath } from 'next/cache';
  */
 export async function assignDeviceToMe(deviceId: string): Promise<{ success: boolean; message: string }> {
   const { user } = await requireAuth();
+  
+  // Validate input
+  try {
+    assignmentSchema.parse({ deviceId });
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Invalid device ID: ${error.issues?.[0]?.message || error.message}`,
+    };
+  }
+  
   const supabase = createAdminClient();
 
   try {
@@ -71,7 +83,7 @@ export async function assignDeviceToMe(deviceId: string): Promise<{ success: boo
     await supabase.from('device_events').insert({
       device_id: deviceId,
       event_type: 'assigned',
-      performed_by: user.id,
+      actor_user_id: user.id,
       metadata: {
         assigned_to: user.id,
       },
@@ -140,7 +152,7 @@ export async function returnDevice(deviceId: string): Promise<{ success: boolean
     await supabase.from('device_events').insert({
       device_id: deviceId,
       event_type: 'returned',
-      performed_by: user.id,
+      actor_user_id: user.id,
       metadata: {
         returned_by: user.id,
         was_assigned_to: assignment.user_id,
@@ -237,7 +249,7 @@ export async function adminAssignDevice(
     await supabase.from('device_events').insert({
       device_id: deviceId,
       event_type: 'override_assigned',
-      performed_by: user.id,
+      actor_user_id: user.id,
       metadata: {
         assigned_to: targetUserId,
         previous_holder: existingAssignment?.user_id,
