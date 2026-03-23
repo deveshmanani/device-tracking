@@ -58,7 +58,7 @@ const QRScanner = () => {
         { facingMode: 'environment' },
         {
           fps: 10,
-          qrbox: { width: 250, height: 250 },
+          qrbox: { width: 300, height: 300 },
         },
         async (decodedText) => {
           console.log('QR Code detected:', decodedText);
@@ -132,7 +132,14 @@ const QRScanner = () => {
       setState('result');
     } catch (err: any) {
       console.error('Scan processing error:', err);
-      setError(err.message || 'Failed to process QR code');
+      
+      // Check if it's a permission error
+      if (err.message?.includes("don't have permission")) {
+        setError("You don't have permission to access this device (Android, iOS, and iPadOS devices only)");
+      } else {
+        setError(err.message || 'Failed to process QR code');
+      }
+      
       setState('idle');
     }
   };

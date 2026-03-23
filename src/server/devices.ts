@@ -36,10 +36,10 @@ export interface DeviceDetail extends Device {
  * Get a single device by ID with full details
  */
 export async function getDeviceById(id: string): Promise<DeviceDetail> {
-  await requireAuth();
+  const { profile } = await requireAuth();
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('devices')
     .select(`
       *,
@@ -58,11 +58,21 @@ export async function getDeviceById(id: string): Promise<DeviceDetail> {
         email
       )
     `)
-    .eq('id', id)
-    .single();
+    .eq('id', id);
+
+  // Apply role-based platform filtering for non-admin users
+  if (profile.role !== 'admin') {
+    query = query.in('platform', ['Android', 'iOS', 'iPadOS']);
+  }
+
+  const { data, error } = await query.single();
 
   if (error) {
     console.error('Error fetching device:', error);
+    // Check if it's a permission issue (device exists but not accessible)
+    if (profile.role !== 'admin') {
+      throw new Error("You don't have permission to access this device");
+    }
     throw new Error('Device not found');
   }
 
@@ -112,7 +122,7 @@ export async function getDeviceById(id: string): Promise<DeviceDetail> {
  * Get paginated list of devices with filters
  */
 export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceListItem[]> {
-  await requireAuth();
+  const { profile } = await requireAuth();
   const supabase = await createClient();
 
   let query = supabase
@@ -144,6 +154,11 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
       )
     `)
     .order('updated_at', { ascending: false });
+
+  // Apply role-based platform filtering for non-admin users
+  if (profile.role !== 'admin') {
+    query = query.in('platform', ['Android', 'iOS', 'iPadOS']);
+  }
 
   // Apply search filter
   if (filters.search) {
@@ -214,13 +229,20 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
  * Get unique platforms for filter dropdown
  */
 export async function getDevicePlatforms(): Promise<string[]> {
-  await requireAuth();
+  const { profile } = await requireAuth();
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('devices')
     .select('platform')
     .not('platform', 'is', null);
+
+  // Apply role-based platform filtering for non-admin users
+  if (profile.role !== 'admin') {
+    query = query.in('platform', ['Android', 'iOS', 'iPadOS']);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error('Error fetching platforms:', error);
@@ -235,13 +257,20 @@ export async function getDevicePlatforms(): Promise<string[]> {
  * Get unique brands for filter dropdown
  */
 export async function getDeviceBrands(): Promise<string[]> {
-  await requireAuth();
+  const { profile } = await requireAuth();
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('devices')
     .select('brand')
     .not('brand', 'is', null);
+
+  // Apply role-based platform filtering for non-admin users
+  if (profile.role !== 'admin') {
+    query = query.in('platform', ['Android', 'iOS', 'iPadOS']);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error('Error fetching brands:', error);

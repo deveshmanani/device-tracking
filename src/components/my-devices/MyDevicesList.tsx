@@ -9,27 +9,41 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import StatusBadge from '@/components/shared/StatusBadge';
 import { NoMyDevicesFound, ErrorState } from '@/components/shared/EmptyStates';
 import Link from 'next/link';
-import { Package, Calendar, ArrowRight } from 'lucide-react';
+import { Package, Calendar, ArrowRight, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/query/keys';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const MyDevicesList = () => {
   const { data: assignments, isLoading, error } = useMyDevices();
   const queryClient = useQueryClient();
   const [returningDeviceId, setReturningDeviceId] = useState<string | null>(null);
   const [returnError, setReturnError] = useState<string | null>(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [deviceToReturn, setDeviceToReturn] = useState<{ id: string; name: string } | null>(null);
 
-  const handleReturn = async (deviceId: string, deviceName: string) => {
-    if (!confirm(`Are you sure you want to return ${deviceName}?`)) {
-      return;
-    }
+  const openReturnDialog = (deviceId: string, deviceName: string) => {
+    setDeviceToReturn({ id: deviceId, name: deviceName });
+    setConfirmDialogOpen(true);
+    setReturnError(null);
+  };
 
-    setReturningDeviceId(deviceId);
+  const handleReturn = async () => {
+    if (!deviceToReturn) return;
+
+    setReturningDeviceId(deviceToReturn.id);
     setReturnError(null);
 
     try {
-      const result = await returnDevice(deviceId);
+      const result = await returnDevice(deviceToReturn.id);
       
       if (result.success) {
         // Invalidate queries to refresh data immediately
@@ -41,6 +55,10 @@ const MyDevicesList = () => {
           queryKey: queryKeys.devices.all,
           refetchType: 'active'
         });
+        
+        // Close dialog on success
+        setConfirmDialogOpen(false);
+        setDeviceToReturn(null);
       } else {
         setReturnError(result.message);
       }
@@ -132,7 +150,7 @@ const MyDevicesList = () => {
               <div className="flex gap-2">
                 <Button
                   variant="default"
-                  onClick={() => handleReturn(assignment.device.id, assignment.device.name)}
+                  onClick={() => openReturnDialog(assignment.device.id, assignment.device.name)}
                   disabled={returningDeviceId === assignment.device.id}
                   className="flex-1"
                 >
@@ -148,6 +166,50 @@ const MyDevicesList = () => {
           </Card>
         ))}
       </div>
+
+      {/* Return Confirmation Dialog */}
+      <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-orange-500" />
+              Return Device
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to return <strong>{deviceToReturn?.name}</strong>?
+              {' '}This action will mark the device as available for others to use.
+            </DialogDescription>
+          </DialogHeader>
+
+          {returnError && (
+            <Alert variant="destructive">
+              <AlertDescription>{returnError}</AlertDescription>
+            </Alert>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setConfirmDialogOpen(false);
+                setDeviceToReturn(null);
+                setReturnError(null);
+              }}
+              disabled={returningDeviceId !== null}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="default"
+              onClick={handleReturn}
+              disabled={returningDeviceId !== null}
+              className="cursor-pointer"
+            >
+              {returningDeviceId ? 'Returning...' : 'Yes, Return Device'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import Header from './Header';
 
 interface AppShellProps {
   children: ReactNode;
-  userRole: 'admin' | 'standard' | 'view_only';
+  userRole: 'admin' | 'user';
   userName: string;
 }
 

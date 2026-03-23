@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import ThemeToggle from '@/components/shared/ThemeToggle';
+import SignOutButton from '@/components/layout/SignOutButton';
 
 interface HeaderProps {
-  userRole: 'admin' | 'standard' | 'view_only';
+  userRole: 'admin' | 'user';
   userName: string;
 }
 
@@ -16,9 +17,9 @@ const Header = ({ userRole, userName }: HeaderProps) => {
 
   const navItems = [
     { href: '/', label: 'Dashboard', roles: ['admin'] },
-    { href: '/devices', label: 'Devices', roles: ['admin', 'standard', 'view_only'] },
-    { href: '/my-devices', label: 'My Devices', roles: ['admin', 'standard'] },
-    { href: '/scan', label: 'Scan QR', roles: ['admin', 'standard'] },
+    { href: '/devices', label: 'Devices', roles: ['admin', 'user'] },
+    { href: '/my-devices', label: 'My Devices', roles: ['admin', 'user'] },
+    { href: '/scan', label: 'Scan QR', roles: ['admin', 'user'] },
     { href: '/admin/labels', label: 'Print Labels', roles: ['admin'] },
   ];
 
@@ -50,13 +51,17 @@ const Header = ({ userRole, userName }: HeaderProps) => {
             ))}
           </nav>
 
-          {/* Right side: User info + Theme toggle */}
+          {/* Right side: User info + Sign Out + Theme toggle */}
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-2">
               <span className="text-sm text-muted-foreground">{userName}</span>
               <span className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground">
                 {userRole}
               </span>
+            </div>
+
+            <div className="hidden md:block">
+              <SignOutButton />
             </div>
 
             <ThemeToggle />
@@ -117,6 +122,9 @@ const Header = ({ userRole, userName }: HeaderProps) => {
                 <div className="px-2 py-2 text-sm">
                   <p className="font-medium">{userName}</p>
                   <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
+                </div>
+                <div className="px-2 mt-2">
+                  <SignOutButton />
                 </div>
               </div>
             </div>
