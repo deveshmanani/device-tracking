@@ -26,14 +26,17 @@ const DeviceForm = () => {
       brand: '',
       model: '',
       platform: 'iOS' as const,
+      os_version: '',
       serial_number: '',
+      imei: '',
       asset_tag: '',
+      location_name: '',
       purchase_date: new Date().toISOString().split('T')[0],
       warranty_expiry: '',
       image_url: '',
+      condition_note: '',
       notes: '',
-    } as DeviceFormData,
-    validatorAdapter: zodValidator(),
+    },
     onSubmit: async ({ value }) => {
       setError(null);
       setIsSubmitting(true);
@@ -144,7 +147,7 @@ const DeviceForm = () => {
                     <Select
                       id="platform"
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) => field.handleChange(e.target.value as any)}
                       onBlur={field.handleBlur}
                     >
                       <option value="iOS">iOS</option>

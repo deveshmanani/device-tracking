@@ -30,7 +30,7 @@ export const deviceSchema = z.object({
     .trim(),
   
   platform: z.enum(['iOS', 'Android', 'Windows', 'macOS', 'Linux', 'Other'], {
-    errorMap: () => ({ message: 'Please select a valid platform' }),
+    message: 'Please select a valid platform',
   }),
   
   purchase_date: z.string()
@@ -71,7 +71,7 @@ const validStatuses: DeviceStatus[] = ['available', 'checked_out', 'in_repair', 
 export const statusTransitionSchema = z.object({
   deviceId: z.string().uuid('Invalid device ID'),
   newStatus: z.enum(['available', 'in_repair', 'retired', 'lost'], {
-    errorMap: () => ({ message: 'Invalid status. Cannot manually set to "checked_out"' }),
+    message: 'Invalid status. Cannot manually set to "checked_out"',
   }),
 });
 

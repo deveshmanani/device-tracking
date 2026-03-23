@@ -1,12 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { WifiOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-
-export const metadata = {
-  title: 'Offline - Device Tracking',
-  description: 'You are currently offline',
-};
 
 const OfflinePage = () => {
   return (
