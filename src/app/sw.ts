@@ -12,11 +12,11 @@ declare global {
   }
 }
 
-declare const self: WorkerGlobalScope;
+declare const self: WorkerGlobalScope & typeof globalThis;
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
-  skipWaiting: true,
+  skipWaiting: false, // Don't auto-skip waiting, let user decide
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: defaultCache,
@@ -30,6 +30,14 @@ const serwist = new Serwist({
       },
     ],
   },
+});
+
+// Listen for messages from the client
+self.addEventListener('message', (event: any) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    // User confirmed update, activate new service worker immediately
+    (self as any).skipWaiting();
+  }
 });
 
 // Listen to fetch events

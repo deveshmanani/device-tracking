@@ -1,11 +1,11 @@
 {
   "name": "device-tracking",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Internal device tracking web app with QR-based assignment flow",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint"
   },

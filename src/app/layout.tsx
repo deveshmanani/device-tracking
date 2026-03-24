@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Geist } from "next/font/google";
 import "./globals.css";
 import Providers from "./Providers";
@@ -13,32 +13,22 @@ export const metadata: Metadata = {
   title: "Device Tracking",
   description: "Internal device tracking system with QR-based assignment",
   manifest: "/manifest.json",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-  ],
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "DeviceTrack",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   icons: {
     icon: [
       {
-        url: "/icons/icon-192x192.svg",
+        url: "/icons/icon-192x192.png",
         sizes: "192x192",
-        type: "image/svg+xml",
+        type: "image/png",
       },
       {
-        url: "/icons/icon-512x512.svg",
+        url: "/icons/icon-512x512.png",
         sizes: "512x512",
-        type: "image/svg+xml",
+        type: "image/png",
       },
     ],
     apple: [
@@ -48,12 +38,23 @@ export const metadata: Metadata = {
         type: "image/svg+xml",
       },
       {
-        url: "/icons/icon-192x192.svg",
+        url: "/icons/icon-192x192.png",
         sizes: "192x192",
-        type: "image/svg+xml",
+        type: "image/png",
       },
     ],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+  ],
 };
 
 const RootLayout = ({
