@@ -97,7 +97,7 @@ const UpdatePrompt = () => {
   }
 
   return (
-    <div className="fixed top-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-50 animate-in slide-in-from-top">
+    <div className="fixed top-16 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-50 animate-in slide-in-from-top">
       <Card className="border-2 shadow-lg bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
