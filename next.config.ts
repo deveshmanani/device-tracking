@@ -9,6 +9,9 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV === 'development',
 });
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  // Empty turbopack config to suppress warning when using --webpack flag
+  turbopack: {},
+};
 
 export default withSerwist(nextConfig);
