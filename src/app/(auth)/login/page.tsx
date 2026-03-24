@@ -6,10 +6,21 @@ const LoginPage = async () => {
   const supabase = await createClient();
   
   // Check if already authenticated
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (user) {
-    redirect('/');
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    // If user is authenticated, redirect to home
+    if (user && !error) {
+      redirect('/');
+    }
+    
+    // If there's an auth error (invalid token), clear the session
+    if (error) {
+      await supabase.auth.signOut();
+    }
+  } catch (error) {
+    // If there's any error checking auth, just continue to login page
+    console.error('Auth check error on login page:', error);
   }
 
   return (

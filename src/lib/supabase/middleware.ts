@@ -33,9 +33,45 @@ export const updateSession = async (request: NextRequest) => {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  
+  try {
+    const { data, error } = await supabase.auth.getUser();
+    
+    // If there's an auth error (like invalid refresh token), clear cookies
+    if (error) {
+      console.error('Auth error in middleware:', error.message);
+      // Clear auth cookies
+      const response = NextResponse.next({ request });
+      response.cookies.delete('sb-access-token');
+      response.cookies.delete('sb-refresh-token');
+      
+      // Redirect to login if not already there
+      if (!request.nextUrl.pathname.startsWith('/login') && 
+          !request.nextUrl.pathname.startsWith('/auth/callback')) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/login';
+        return NextResponse.redirect(url);
+      }
+      return response;
+    }
+    
+    user = data.user;
+  } catch (error) {
+    console.error('Unexpected auth error in middleware:', error);
+    // Clear auth cookies on unexpected errors
+    const response = NextResponse.next({ request });
+    response.cookies.delete('sb-access-token');
+    response.cookies.delete('sb-refresh-token');
+    
+    if (!request.nextUrl.pathname.startsWith('/login') && 
+        !request.nextUrl.pathname.startsWith('/auth/callback')) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
 
   // Refresh session if expired
   if (!user && !request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/auth/callback')) {

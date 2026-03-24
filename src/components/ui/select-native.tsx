@@ -36,9 +36,9 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           {children}
         </select>
         {isOpen ? (
-          <ChevronUp className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <ChevronUp className="absolute right-3 top-[calc(50%+0.25rem)] -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         ) : (
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-[calc(50%+0.25rem)] -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         )}
       </div>
     );

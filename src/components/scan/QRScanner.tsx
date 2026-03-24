@@ -12,11 +12,13 @@ import { Camera, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
 import StatusBadge from '@/components/shared/StatusBadge';
 import type { DeviceDetail } from '@/server/devices';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type ScanState = 'idle' | 'initializing' | 'scanning' | 'processing' | 'result';
 type PermissionState = 'granted' | 'denied' | 'unsupported' | 'unknown';
 
 const QRScanner = () => {
+  const router = useRouter();
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [state, setState] = useState<ScanState>('idle');
   const [permissionState, setPermissionState] = useState<PermissionState>('unknown');
@@ -180,18 +182,18 @@ const QRScanner = () => {
       setActionResult(result);
       
       if (result.success) {
-        // Refresh device data
-        const updated = await getDeviceById(device.id);
-        setDevice(updated);
+        // Wait a moment to show success message, then redirect
+        setTimeout(() => {
+          router.push('/devices');
+        }, 1500);
       }
     } catch (err: any) {
       setActionResult({
         success: false,
         message: err.message || 'Failed to return device',
       });
+      setState('result');
     }
-
-    setState('result');
   };
 
   const resetScanner = () => {

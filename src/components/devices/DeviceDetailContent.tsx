@@ -52,67 +52,72 @@ const DeviceDetailContent = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="space-y-4">
+        {/* Back Button */}
+        <div>
           <Link href="/devices">
             <Button variant="outline" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
           </Link>
-          <div>
-            <h1 className="text-3xl font-bold">{device.name}</h1>
-            <p className="text-muted-foreground">
+        </div>
+
+        {/* Title and Actions */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl md:text-3xl font-bold break-words">{device.name}</h1>
+            <p className="text-sm md:text-base text-muted-foreground break-words">
               {device.brand} {device.model}
             </p>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {device.status === "checked_out" && device.current_holder ? (
-            <Tooltip>
-              <TooltipTrigger className="cursor-pointer">
-                <StatusBadge status={device.status} />
-              </TooltipTrigger>
-              <TooltipContent className="p-4 max-w-xs">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold">Current Assignment</p>
-                  <div className="space-y-1">
-                    <div className="flex items-start gap-2">
-                      <User className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                      <div>
-                        <p className="text-sm font-medium">
-                          {device.current_holder.full_name ||
-                            device.current_holder.email}
-                        </p>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {device.status === "checked_out" && device.current_holder ? (
+              <Tooltip>
+                <TooltipTrigger className="cursor-pointer">
+                  <StatusBadge status={device.status} />
+                </TooltipTrigger>
+                <TooltipContent className="p-4 max-w-xs">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold">Current Assignment</p>
+                    <div className="space-y-1">
+                      <div className="flex items-start gap-2">
+                        <User className="h-4 w-4 mt-0.5 text-muted-foreground" />
+                        <div>
+                          <p className="text-sm font-medium">
+                            {device.current_holder.full_name ||
+                              device.current_holder.email}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {device.current_holder.email}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
                         <p className="text-xs text-muted-foreground">
-                          {device.current_holder.email}
+                          Checked out:{" "}
+                          {new Date(
+                            device.current_holder.assigned_at,
+                          ).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">
-                        Checked out:{" "}
-                        {new Date(
-                          device.current_holder.assigned_at,
-                        ).toLocaleDateString()}
-                      </p>
-                    </div>
                   </div>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <StatusBadge status={device.status} />
-          )}
-          {userRole === "admin" && (
-            <Link href={`/devices/${device.id}/edit`}>
-              <Button variant="outline">
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </Button>
-            </Link>
-          )}
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <StatusBadge status={device.status} />
+            )}
+            {userRole === "admin" && (
+              <Link href={`/devices/${device.id}/edit`}>
+                <Button variant="outline" size="sm" className="md:size-default">
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
@@ -128,51 +133,51 @@ const DeviceDetailContent = ({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-muted-foreground">
                     Asset Tag
                   </p>
-                  <p className="font-mono text-sm mt-1">{device.asset_tag}</p>
+                  <p className="font-mono text-sm mt-1 break-all">{device.asset_tag}</p>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-muted-foreground">
                     Platform
                   </p>
-                  <p className="mt-1">{device.platform}</p>
+                  <p className="mt-1 break-words">{device.platform}</p>
                 </div>
                 {device.os_version && (
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-muted-foreground">
                       OS Version
                     </p>
-                    <p className="mt-1">{device.os_version}</p>
+                    <p className="mt-1 break-words">{device.os_version}</p>
                   </div>
                 )}
                 {device.serial_number && (
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-muted-foreground">
                       Serial Number
                     </p>
-                    <p className="font-mono text-sm mt-1">
+                    <p className="font-mono text-sm mt-1 break-all">
                       {device.serial_number}
                     </p>
                   </div>
                 )}
                 {device.imei && (
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-muted-foreground">
                       IMEI
                     </p>
-                    <p className="font-mono text-sm mt-1">{device.imei}</p>
+                    <p className="font-mono text-sm mt-1 break-all">{device.imei}</p>
                   </div>
                 )}
                 {device.location_name && (
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-muted-foreground">
                       Location
                     </p>
-                    <p className="mt-1">{device.location_name}</p>
+                    <p className="mt-1 break-words">{device.location_name}</p>
                   </div>
                 )}
               </div>
@@ -182,7 +187,7 @@ const DeviceDetailContent = ({
                   <p className="text-sm font-medium text-muted-foreground mb-2">
                     Condition Notes
                   </p>
-                  <p className="text-sm">{device.condition_note}</p>
+                  <p className="text-sm break-words">{device.condition_note}</p>
                 </div>
               )}
             </CardContent>

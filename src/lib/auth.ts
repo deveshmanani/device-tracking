@@ -9,26 +9,40 @@ import type { Profile } from '@/types';
 export async function requireAuth() {
   const supabase = await createClient();
   
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-  
-  if (userError || !user) {
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      // Clear any invalid session before redirecting
+      await supabase.auth.signOut();
+      redirect('/login');
+    }
+
+    // Get profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !profile) {
+      // Profile doesn't exist (shouldn't happen after bootstrap)
+      console.error('Profile not found for authenticated user:', user.id);
+      await supabase.auth.signOut();
+      redirect('/login');
+    }
+
+    return { user, profile };
+  } catch (error) {
+    // Handle any unexpected auth errors
+    console.error('Authentication error:', error);
+    try {
+      await supabase.auth.signOut();
+    } catch (signOutError) {
+      // Ignore signOut errors
+    }
     redirect('/login');
   }
-
-  // Get profile
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
-  if (profileError || !profile) {
-    // Profile doesn't exist (shouldn't happen after bootstrap)
-    console.error('Profile not found for authenticated user:', user.id);
-    redirect('/login');
-  }
-
-  return { user, profile };
 }
 
 /**
@@ -52,23 +66,29 @@ export async function requireAdmin() {
 export async function getCurrentUser() {
   const supabase = await createClient();
   
-  const { data: { user }, error } = await supabase.auth.getUser();
-  
-  if (error || !user) {
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error || !user) {
+      return null;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile) {
+      return null;
+    }
+
+    return { user, profile };
+  } catch (error) {
+    // Silently handle auth errors for optional auth check
+    console.error('Error getting current user:', error);
     return null;
   }
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile) {
-    return null;
-  }
-
-  return { user, profile };
 }
 
 /**

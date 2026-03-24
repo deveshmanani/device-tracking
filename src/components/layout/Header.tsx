@@ -16,14 +16,15 @@ const Header = ({ userRole, userName }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { href: '/', label: 'Dashboard', roles: ['admin'] },
-    { href: '/devices', label: 'Devices', roles: ['admin', 'user'] },
-    { href: '/my-devices', label: 'My Devices', roles: ['admin', 'user'] },
-    { href: '/scan', label: 'Scan QR', roles: ['admin', 'user'] },
-    { href: '/admin/labels', label: 'Print Labels', roles: ['admin'] },
+    { href: '/', label: 'Dashboard', roles: ['admin'], mobileOnly: false },
+    { href: '/devices', label: 'Devices', roles: ['admin', 'user'], mobileOnly: false },
+    { href: '/my-devices', label: 'My Devices', roles: ['admin', 'user'], mobileOnly: false },
+    { href: '/scan', label: 'Scan QR', roles: ['admin', 'user'], mobileOnly: false },
+    { href: '/admin/labels', label: 'Print Labels', roles: ['admin'], mobileOnly: false },
   ];
 
   const visibleNavItems = navItems.filter(item => item.roles.includes(userRole));
+  const mobileNavItems = visibleNavItems.filter(item => item.href !== '/scan');
 
   // Determine home link based on role
   const homeLink = userRole === 'admin' ? '/' : '/devices';
@@ -107,7 +108,7 @@ const Header = ({ userRole, userName }: HeaderProps) => {
         {isMobileMenuOpen && (
           <nav className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-3">
-              {visibleNavItems.map(item => (
+              {mobileNavItems.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
