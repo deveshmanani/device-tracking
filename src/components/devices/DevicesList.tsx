@@ -28,6 +28,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { DeviceListSkeleton } from "@/components/shared/Skeletons";
 import { NoDevicesFound, ErrorState } from "@/components/shared/EmptyStates";
+import { ChevronUp, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Custom debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -61,6 +63,9 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
 
   // Local state for search input (for immediate UI feedback)
   const [searchInput, setSearchInput] = useState(filters.search);
+
+  // Local state for mobile filter collapse
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Debounce search input (500ms delay)
   const debouncedSearch = useDebounce(searchInput, 500);
@@ -183,12 +188,16 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
   const hasActiveFilters =
     filters.search || filters.status || filters.platform || filters.brand;
 
+  const hasActiveNonSearchFilters =
+    filters.status || filters.platform || filters.brand;
+
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <Card className="py-0">
+        <CardContent className="p-2">
+          {/* Desktop: Original layout */}
+          <div className="hidden md:grid md:grid-cols-4 gap-4">
             <div className="pt-2">
               <Input
                 placeholder="Search devices..."
@@ -241,6 +250,92 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                 ))}
               </Select>
             </div>
+          </div>
+
+          {/* Mobile: Search + Collapsible Filters */}
+          <div className="md:hidden space-y-3">
+            {/* Search Input with Filter Icon */}
+            <div className="flex items-center gap-2">
+              <div className="flex-1 pt-2">
+                <Input
+                  placeholder="Search devices..."
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+              </div>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="relative mt-2"
+              >
+                {isFilterOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <Filter className="h-4 w-4" />
+                )}
+                {hasActiveNonSearchFilters && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium">
+                    {
+                      [filters.status, filters.platform, filters.brand].filter(
+                        Boolean,
+                      ).length
+                    }
+                  </span>
+                )}
+              </Button>
+            </div>
+
+            {/* Collapsible Filter Section */}
+            {isFilterOpen && (
+              <div className="space-y-3 pt-1">
+                <div>
+                  <Select
+                    value={filters.status}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      setFilters({ status: e.target.value })
+                    }
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="available">Available</option>
+                    <option value="checked_out">Booked</option>
+                    <option value="in_repair">In Repair</option>
+                    <option value="retired">Retired</option>
+                    <option value="lost">Lost</option>
+                  </Select>
+                </div>
+                <div>
+                  <Select
+                    value={filters.platform}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      setFilters({ platform: e.target.value })
+                    }
+                  >
+                    <option value="">All Platforms</option>
+                    {platforms?.map((platform) => (
+                      <option key={platform} value={platform}>
+                        {platform}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <Select
+                    value={filters.brand}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      setFilters({ brand: e.target.value })
+                    }
+                  >
+                    <option value="">All Brands</option>
+                    {brands?.map((brand) => (
+                      <option key={brand} value={brand}>
+                        {brand}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -304,7 +399,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
             {devices.map((device) => (
               <Card
                 key={device.id}
-                className="hover:border-primary/50 transition-colors"
+                className="hover:border-primary/50 transition-colors py-0"
               >
                 <CardContent className="p-4">
                   <Link href={`/devices/${device.id}`}>
@@ -335,8 +430,8 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                     </div>
                   </Link>
                   {userRole === "admin" && (
-                    <div className="mt-3 pt-3 border-t border-border">
-                      <div className="text-xs text-muted-foreground mb-1">
+                    <div className="mt-3 pt-3 border-t border-border flex items-center justify-between gap-3">
+                      <div className="text-xs text-muted-foreground whitespace-nowrap">
                         Admin Actions:
                       </div>
                       <StatusChangeSelect
