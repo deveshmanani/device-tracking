@@ -9,9 +9,23 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV === 'development',
 });
 
+const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
+
 const nextConfig: NextConfig = {
-  // Empty turbopack config to suppress warning when using --webpack flag
   turbopack: {},
+  async redirects() {
+    if (!isMaintenanceMode) {
+      return [];
+    }
+
+    return [
+      {
+        source: '/((?!maintenance).*)',
+        destination: '/maintenance',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default withSerwist(nextConfig);

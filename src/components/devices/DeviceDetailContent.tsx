@@ -267,7 +267,7 @@ const DeviceDetailContent = ({
       </div>
 
       {/* Device History */}
-      <DeviceHistory deviceId={device.id} />
+      {userRole === 'admin' && <DeviceHistory deviceId={device.id} />}
     </div>
   );
 };

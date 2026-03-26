@@ -173,16 +173,10 @@ const LabelPrintManager = () => {
               .device-name {
                 font-size: 12pt;
                 font-weight: bold;
-                margin: 0 0 0.125rem 0;
+                margin: 0;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-              }
-              .asset-tag {
-                font-size: 11pt;
-                margin: 0;
-                font-family: 'Courier New', monospace;
-                font-weight: 600;
               }
             </style>
           </head>
@@ -194,7 +188,6 @@ const LabelPrintManager = () => {
                 <div class="label-content">
                   <img src="${dataUrl}" alt="QR Code" class="qr-image" />
                   <p class="device-name">${device.name}</p>
-                  <p class="asset-tag">${device.asset_tag}</p>
                 </div>
               </div>
             `

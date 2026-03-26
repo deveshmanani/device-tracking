@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { QrCode } from 'lucide-react';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import SignOutButton from '@/components/layout/SignOutButton';
 
@@ -68,22 +69,7 @@ const Header = ({ userRole, userName }: HeaderProps) => {
                   }`}
                   aria-label="Scan QR Code"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="3" width="7" height="7" />
-                    <rect x="14" y="3" width="7" height="7" />
-                    <rect x="14" y="14" width="7" height="7" />
-                    <rect x="3" y="14" width="7" height="7" />
-                  </svg>
+                  <QrCode className="w-5 h-5" />
                 </button>
               </Link>
 

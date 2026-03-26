@@ -7,6 +7,7 @@ const envSchema = z.object({
   
   // App - Public
   NEXT_PUBLIC_APP_URL: z.string().url('Invalid app URL').default('http://localhost:3000'),
+  NEXT_PUBLIC_MAINTENANCE_MODE: z.string().optional().default('false'),
   
   // Supabase - Server only
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional().default('placeholder-service-role-key'),
@@ -16,6 +17,7 @@ const clientEnvSchema = envSchema.pick({
   NEXT_PUBLIC_SUPABASE_URL: true,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: true,
   NEXT_PUBLIC_APP_URL: true,
+  NEXT_PUBLIC_MAINTENANCE_MODE: true,
 });
 
 function validateEnv() {
@@ -34,6 +36,7 @@ function validateClientEnv() {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE,
   });
   
   return parsed;

@@ -51,8 +51,36 @@ const QRCodePreview = ({
   const handleDownload = () => {
     if (!canvasRef.current) return;
 
-    const canvas = canvasRef.current;
-    const url = canvas.toDataURL('image/png');
+    const qrCanvas = canvasRef.current;
+    
+    // Create a new canvas with extra height for the device name text
+    const padding = 20;
+    const textHeight = deviceName ? 40 : 0;
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = qrCanvas.width + (padding * 2);
+    finalCanvas.height = qrCanvas.height + textHeight + (padding * 2);
+    
+    const ctx = finalCanvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Fill background with white
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+    
+    // Draw the QR code centered
+    ctx.drawImage(qrCanvas, padding, padding);
+    
+    // Draw device name text at the bottom if provided
+    if (deviceName) {
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(deviceName, finalCanvas.width / 2, qrCanvas.height + padding + (textHeight / 2));
+    }
+    
+    // Download the final canvas
+    const url = finalCanvas.toDataURL('image/png');
     const link = document.createElement('a');
     link.download = `qr-${assetTag || deviceId}.png`;
     link.href = url;
@@ -74,7 +102,6 @@ const QRCodePreview = ({
           <style>
             @media print {
               @page {
-                size: 4in 2in;
                 margin: 0.25in;
               }
               body {
@@ -84,31 +111,25 @@ const QRCodePreview = ({
             }
             body {
               font-family: system-ui, -apple-system, sans-serif;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              min-height: 100vh;
-              padding: 1rem;
+              margin: 0;
+              padding: 0.25in;
             }
             .label {
+              position: absolute;
+              top: 0.25in;
+              left: 0.25in;
               text-align: center;
-              max-width: 3.5in;
             }
             .qr-image {
               width: 2in;
               height: 2in;
               margin: 0 auto 0.5rem;
+              display: block;
             }
             .device-name {
               font-size: 14pt;
               font-weight: bold;
-              margin: 0 0 0.25rem 0;
-            }
-            .asset-tag {
-              font-size: 12pt;
               margin: 0;
-              font-family: monospace;
             }
           </style>
         </head>
@@ -116,7 +137,6 @@ const QRCodePreview = ({
           <div class="label">
             <img src="${dataUrl}" alt="QR Code" class="qr-image" />
             ${deviceName ? `<p class="device-name">${deviceName}</p>` : ''}
-            ${assetTag ? `<p class="asset-tag">${assetTag}</p>` : ''}
           </div>
           <script>
             window.onload = () => {

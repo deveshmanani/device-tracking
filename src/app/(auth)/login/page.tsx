@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import LoginButton from './LoginButton';
+import ThemeToggle from '@/components/shared/ThemeToggle';
 
 const LoginPage = async () => {
   const supabase = await createClient();
@@ -25,6 +26,10 @@ const LoginPage = async () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md">
         <div className="bg-card rounded-lg shadow-lg p-8 border border-border">
           <div className="text-center mb-8">
