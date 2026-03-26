@@ -198,7 +198,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
         <CardContent className="p-2">
           {/* Desktop: Original layout */}
           <div className="hidden md:grid md:grid-cols-4 gap-4">
-            <div className="pt-2">
+            <div className="pt-2 pb-2">
               <Input
                 placeholder="Search devices..."
                 value={searchInput}
@@ -256,7 +256,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
           <div className="md:hidden space-y-3">
             {/* Search Input with Filter Icon */}
             <div className="flex items-center gap-2">
-              <div className="flex-1 pt-2">
+              <div className="flex-1">
                 <Input
                   placeholder="Search devices..."
                   value={searchInput}
@@ -265,9 +265,9 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
               </div>
               <Button
                 variant="outline"
-                size="icon"
+                size="icon-lg"
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="relative mt-2"
+                className="relative"
               >
                 {isFilterOpen ? (
                   <ChevronUp className="h-4 w-4" />
