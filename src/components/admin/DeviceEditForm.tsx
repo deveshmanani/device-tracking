@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useForm } from '@tanstack/react-form';
-import { z } from 'zod';
-import { updateDevice, type UpdateDeviceInput } from '@/server';
-import { useDevice } from '@/hooks/useDevices';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select } from '@/components/ui/select-native';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loading } from '@/components/ui/loading';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { Loader2, AlertCircle } from 'lucide-react';
-import type { DeviceStatus } from '@/types/database';
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
+import { updateDevice, type UpdateDeviceInput } from "@/server";
+import { useDevice } from "@/hooks/useDevices";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select-native";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loading } from "@/components/ui/loading";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { Loader2, AlertCircle } from "lucide-react";
+import type { DeviceStatus } from "@/types/database";
 
 interface DeviceEditFormProps {
   deviceId: string;
@@ -29,18 +29,18 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
 
   const form = useForm({
     defaultValues: {
-      name: '',
-      brand: '',
-      model: '',
-      platform: '',
-      os_version: '',
-      serial_number: '',
-      imei: '',
-      asset_tag: '',
-      status: 'available' as DeviceStatus,
-      condition_note: '',
-      location_name: '',
-      image_url: '',
+      name: "",
+      brand: "",
+      model: "",
+      platform: "",
+      os_version: "",
+      serial_number: "",
+      imei: "",
+      asset_tag: "",
+      status: "available" as DeviceStatus,
+      condition_note: "",
+      location_name: "",
+      image_url: "",
     },
     onSubmit: async ({ value }) => {
       setError(null);
@@ -66,15 +66,16 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
         router.push(`/devices/${deviceId}`);
       } catch (err) {
         // Display the error message from the server
-        const errorMessage = err instanceof Error 
-          ? err.message 
-          : 'An unexpected error occurred while updating the device';
-        
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred while updating the device";
+
         setError(errorMessage);
         setIsSubmitting(false);
-        
+
         // Scroll to top to show error
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
   });
@@ -82,18 +83,18 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
   // Update form when device data loads
   useEffect(() => {
     if (device) {
-      form.setFieldValue('name', device.name);
-      form.setFieldValue('brand', device.brand);
-      form.setFieldValue('model', device.model);
-      form.setFieldValue('platform', device.platform);
-      form.setFieldValue('os_version', device.os_version || '');
-      form.setFieldValue('serial_number', device.serial_number || '');
-      form.setFieldValue('imei', device.imei || '');
-      form.setFieldValue('asset_tag', device.asset_tag);
-      form.setFieldValue('status', device.status);
-      form.setFieldValue('condition_note', device.condition_note || '');
-      form.setFieldValue('location_name', device.location_name || '');
-      form.setFieldValue('image_url', device.image_url || '');
+      form.setFieldValue("name", device.name);
+      form.setFieldValue("brand", device.brand);
+      form.setFieldValue("model", device.model);
+      form.setFieldValue("platform", device.platform);
+      form.setFieldValue("os_version", device.os_version || "");
+      form.setFieldValue("serial_number", device.serial_number || "");
+      form.setFieldValue("imei", device.imei || "");
+      form.setFieldValue("asset_tag", device.asset_tag);
+      form.setFieldValue("status", device.status);
+      form.setFieldValue("condition_note", device.condition_note || "");
+      form.setFieldValue("location_name", device.location_name || "");
+      form.setFieldValue("image_url", device.image_url || "");
     }
   }, [device, form]);
 
@@ -111,7 +112,7 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
     return (
       <Alert variant="destructive">
         <AlertDescription>
-          {loadError?.message || 'Device not found'}
+          {loadError?.message || "Device not found"}
         </AlertDescription>
       </Alert>
     );
@@ -135,7 +136,8 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
             <Alert variant="destructive" className="mb-6">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription className="ml-2">
-                <strong>Error: </strong>{error}
+                <strong>Error: </strong>
+                {error}
               </AlertDescription>
             </Alert>
           )}
@@ -143,7 +145,7 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
           {/* Basic Info */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Basic Information</h3>
-            
+
             <form.Field name="name">
               {(field) => (
                 <div>
@@ -192,7 +194,9 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
               <form.Field name="platform">
                 {(field) => (
                   <div>
-                    <Label htmlFor="platform">Platform *</Label>
+                    <Label className="pb-0" htmlFor="platform">
+                      Platform *
+                    </Label>
                     <Select
                       id="platform"
                       value={field.state.value}
@@ -243,18 +247,22 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
               <form.Field name="status">
                 {(field) => (
                   <div>
-                    <Label htmlFor="status">Status *</Label>
+                    <Label className="pb-0" htmlFor="status">
+                      Status *
+                    </Label>
                     <Select
                       id="status"
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value as DeviceStatus)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.value as DeviceStatus)
+                      }
                     >
                       <option value="available">Available</option>
                       <option value="in_repair">In Repair</option>
                       <option value="retired">Retired</option>
                       <option value="lost">Lost</option>
                       {/* checked_out is not selectable - only via scan flow */}
-                      {field.state.value === 'checked_out' && (
+                      {field.state.value === "checked_out" && (
                         <option value="checked_out" disabled>
                           Booked (use return flow)
                         </option>
@@ -362,7 +370,9 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Save Changes
             </Button>
           </div>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { parseAsString, useQueryStates } from "nuqs";
+import { useRouter } from "next/navigation";
 import {
   useDevices,
   useDevicePlatforms,
@@ -53,6 +54,8 @@ interface DevicesListProps {
 }
 
 const DevicesList = ({ userRole }: DevicesListProps) => {
+  const router = useRouter();
+  
   // URL state management with nuqs
   const [filters, setFilters] = useQueryStates({
     search: parseAsString.withDefault(""),
@@ -101,28 +104,37 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
   const columns = useMemo<ColumnDef<DeviceListItem>[]>(() => {
     const baseColumns: ColumnDef<DeviceListItem>[] = [
       {
+        accessorKey: "image_url",
+        header: "Image",
+        cell: ({ row }) => (
+          <div className="w-16 h-16 relative rounded-md overflow-hidden bg-muted flex items-center justify-center">
+            {row.original.image_url ? (
+              <img
+                src={row.original.image_url}
+                alt={row.original.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-xs text-muted-foreground">No image</span>
+            )}
+          </div>
+        ),
+      },
+      {
         accessorKey: "asset_tag",
         header: "Asset Tag",
         cell: ({ row }) => (
-          <Link
-            href={`/devices/${row.original.id}`}
-            className="font-mono text-sm text-primary hover:underline"
-          >
+          <span className="font-mono text-sm text-primary">
             {row.original.asset_tag}
-          </Link>
+          </span>
         ),
       },
       {
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => (
-          <div>
-            <Link
-              href={`/devices/${row.original.id}`}
-              className="font-medium hover:text-primary"
-            >
-              {row.original.name}
-            </Link>
+          <div className="font-medium">
+            {row.original.name}
           </div>
         ),
       },
@@ -378,10 +390,19 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-t border-border hover:bg-muted/50 transition-colors"
+                    onClick={() => router.push(`/devices/${row.original.id}`)}
+                    className="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-3">
+                      <td 
+                        key={cell.id} 
+                        className="px-4 py-3"
+                        onClick={(e) => {
+                          if (cell.column.id === 'actions') {
+                            e.stopPropagation();
+                          }
+                        }}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -403,30 +424,50 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
               >
                 <CardContent className="p-4">
                   <Link href={`/devices/${device.id}`}>
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <h3 className="font-semibold">{device.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {device.brand} {device.model}
-                        </p>
+                    <div className="flex gap-3">
+                      {/* Device Image Thumbnail */}
+                      <div className="w-20 h-20 relative rounded-md overflow-hidden bg-muted flex-shrink-0 flex items-center justify-center">
+                        {device.image_url ? (
+                          <img
+                            src={device.image_url}
+                            alt={device.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-xs text-muted-foreground text-center px-1">
+                            No image
+                          </span>
+                        )}
                       </div>
-                      <StatusBadge status={device.status} />
-                    </div>
-                    <div className="space-y-1 text-sm">
-                      <p className="text-muted-foreground">
-                        Asset:{" "}
-                        <span className="font-mono">{device.asset_tag}</span>
-                      </p>
-                      <p className="text-muted-foreground">
-                        Platform: {device.platform}
-                      </p>
-                      {device.current_holder && (
-                        <p className="text-primary">
-                          Holder:{" "}
-                          {device.current_holder.full_name ||
-                            device.current_holder.email}
-                        </p>
-                      )}
+                      
+                      {/* Device Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h3 className="font-semibold">{device.name}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {device.brand} {device.model}
+                            </p>
+                          </div>
+                          <StatusBadge status={device.status} />
+                        </div>
+                        <div className="space-y-1 text-sm">
+                          <p className="text-muted-foreground">
+                            Asset:{" "}
+                            <span className="font-mono">{device.asset_tag}</span>
+                          </p>
+                          <p className="text-muted-foreground">
+                            Platform: {device.platform}
+                          </p>
+                          {device.current_holder && (
+                            <p className="text-primary">
+                              Holder:{" "}
+                              {device.current_holder.full_name ||
+                                device.current_holder.email}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </Link>
                   {userRole === "admin" && (

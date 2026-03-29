@@ -11,7 +11,7 @@ export interface DeviceFilters {
   brand?: string;
 }
 
-export interface DeviceListItem extends Omit<Device, 'condition_note' | 'image_url'> {
+export interface DeviceListItem extends Omit<Device, 'condition_note'> {
   current_holder?: {
     id: string;
     full_name: string | null;
@@ -139,6 +139,7 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
       asset_tag,
       status,
       location_name,
+      image_url,
       qr_code_value,
       created_by,
       created_at,
@@ -208,6 +209,7 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
       asset_tag: device.asset_tag,
       status: device.status,
       location_name: device.location_name,
+      image_url: device.image_url,
       qr_code_value: device.qr_code_value,
       created_by: device.created_by,
       created_at: device.created_at,
