@@ -55,7 +55,7 @@ interface DevicesListProps {
 
 const DevicesList = ({ userRole }: DevicesListProps) => {
   const router = useRouter();
-  
+
   // URL state management with nuqs
   const [filters, setFilters] = useQueryStates({
     search: parseAsString.withDefault(""),
@@ -112,7 +112,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
               <img
                 src={row.original.image_url}
                 alt={row.original.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <span className="text-xs text-muted-foreground">No image</span>
@@ -133,9 +133,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => (
-          <div className="font-medium">
-            {row.original.name}
-          </div>
+          <div className="font-medium">{row.original.name}</div>
         ),
       },
       {
@@ -163,7 +161,12 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
         cell: ({ row }) => {
           const holder = row.original.current_holder;
           return holder ? (
-            <div className="text-sm">{holder.full_name || holder.email}</div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-sm font-medium text-primary">
+                {holder.full_name || holder.email}
+              </span>
+            </div>
           ) : (
             <span className="text-muted-foreground text-sm">—</span>
           );
@@ -394,11 +397,11 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                     className="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td 
-                        key={cell.id} 
+                      <td
+                        key={cell.id}
                         className="px-4 py-3"
                         onClick={(e) => {
-                          if (cell.column.id === 'actions') {
+                          if (cell.column.id === "actions") {
                             e.stopPropagation();
                           }
                         }}
@@ -431,7 +434,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                           <img
                             src={device.image_url}
                             alt={device.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                         ) : (
                           <span className="text-xs text-muted-foreground text-center px-1">
@@ -439,7 +442,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                           </span>
                         )}
                       </div>
-                      
+
                       {/* Device Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between mb-2">
@@ -454,17 +457,21 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                         <div className="space-y-1 text-sm">
                           <p className="text-muted-foreground">
                             Asset:{" "}
-                            <span className="font-mono">{device.asset_tag}</span>
+                            <span className="font-mono">
+                              {device.asset_tag}
+                            </span>
                           </p>
                           <p className="text-muted-foreground">
                             Platform: {device.platform}
                           </p>
                           {device.current_holder && (
-                            <p className="text-primary">
-                              Holder:{" "}
-                              {device.current_holder.full_name ||
-                                device.current_holder.email}
-                            </p>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mt-2">
+                              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                              <span className="text-xs font-medium text-primary">
+                                {device.current_holder.full_name ||
+                                  device.current_holder.email}
+                              </span>
+                            </div>
                           )}
                         </div>
                       </div>

@@ -1,23 +1,33 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useDashboardStats, useRecentDevices } from '@/hooks/useDashboard';
-import StatCard from '@/components/shared/StatCard';
-import StatusBadge from '@/components/shared/StatusBadge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loading } from '@/components/ui/loading';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from "next/link";
+import { useDashboardStats, useRecentDevices } from "@/hooks/useDashboard";
+import StatCard from "@/components/shared/StatCard";
+import StatusBadge from "@/components/shared/StatusBadge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loading } from "@/components/ui/loading";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const DashboardContent = () => {
-  const { data: stats, isLoading: statsLoading, error: statsError } = useDashboardStats();
-  const { data: recentDevices, isLoading: devicesLoading, error: devicesError } = useRecentDevices(8);
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useDashboardStats();
+  const {
+    data: recentDevices,
+    isLoading: devicesLoading,
+    error: devicesError,
+  } = useRecentDevices(8);
 
   if (statsError || devicesError) {
     return (
       <Alert variant="destructive">
         <AlertTitle>Error loading dashboard</AlertTitle>
         <AlertDescription>
-          {statsError?.message || devicesError?.message || 'An unexpected error occurred'}
+          {statsError?.message ||
+            devicesError?.message ||
+            "An unexpected error occurred"}
         </AlertDescription>
       </Alert>
     );
@@ -40,10 +50,26 @@ const DashboardContent = () => {
           </div>
         ) : stats ? (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <StatCard title="Total Devices" value={stats.total} variant="primary" />
-            <StatCard title="Available" value={stats.available} variant="success" />
-            <StatCard title="Booked" value={stats.checked_out} variant="default" />
-            <StatCard title="In Repair" value={stats.in_repair} variant="warning" />
+            <StatCard
+              title="Total Devices"
+              value={stats.total}
+              variant="primary"
+            />
+            <StatCard
+              title="Available"
+              value={stats.available}
+              variant="success"
+            />
+            <StatCard
+              title="Booked"
+              value={stats.checked_out}
+              variant="default"
+            />
+            <StatCard
+              title="In Repair"
+              value={stats.in_repair}
+              variant="warning"
+            />
             <StatCard title="Retired" value={stats.retired} variant="default" />
             <StatCard title="Lost" value={stats.lost} variant="destructive" />
           </div>
@@ -54,8 +80,8 @@ const DashboardContent = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Recently Updated</h2>
-          <Link 
-            href="/devices" 
+          <Link
+            href="/devices"
             className="text-sm text-primary hover:underline"
           >
             View all devices →
@@ -79,7 +105,7 @@ const DashboardContent = () => {
                         <img
                           src={device.image_url}
                           alt={device.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                         />
                       </div>
                     )}
@@ -100,7 +126,9 @@ const DashboardContent = () => {
                       </p>
                       {device.current_holder && (
                         <p className="text-xs text-primary">
-                          Holder: {device.current_holder.full_name || device.current_holder.email}
+                          Holder:{" "}
+                          {device.current_holder.full_name ||
+                            device.current_holder.email}
                         </p>
                       )}
                     </div>
