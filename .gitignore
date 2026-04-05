@@ -39,3 +39,8 @@ next-env.d.ts
 .docs
 .cursor
 /scripts
+.claude/
+.code-review-graph/
+AGENTS.md
+CLAUDE.md
+.cursorrules
