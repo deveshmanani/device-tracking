@@ -13,7 +13,7 @@ If you discover a security vulnerability in this project, please report it respo
 
 **Do NOT open a public GitHub issue for security vulnerabilities.**
 
-Instead, please email: **deveshmanani@gmail.com**
+Instead, please email: **deveshmanani1818@gmail.com**
 
 Include the following in your report:
 
