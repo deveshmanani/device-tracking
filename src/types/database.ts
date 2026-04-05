@@ -41,6 +41,7 @@ export interface Device {
   brand: string;
   model: string;
   platform: string;
+  category: string | null;
   os_version: string | null;
   serial_number: string | null;
   imei: string | null;

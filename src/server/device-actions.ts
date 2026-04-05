@@ -11,6 +11,7 @@ export interface CreateDeviceInput {
   brand: string;
   model: string;
   platform: string;
+  category?: string;
   os_version?: string;
   serial_number?: string;
   imei?: string;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getDevices, getDevicePlatforms, getDeviceBrands, getDeviceById, type DeviceFilters } from '@/server';
+import { getDevices, getDevicePlatforms, getDeviceBrands, getDeviceCategories, getDeviceById, type DeviceFilters } from '@/server';
 import { queryKeys } from '@/lib/query/keys';
 
 /**
@@ -41,5 +41,15 @@ export function useDeviceBrands() {
   return useQuery({
     queryKey: ['device-brands'],
     queryFn: () => getDeviceBrands(),
+  });
+}
+
+/**
+ * Hook to fetch device categories for filter dropdown
+ */
+export function useDeviceCategories() {
+  return useQuery({
+    queryKey: ['device-categories'],
+    queryFn: () => getDeviceCategories(),
   });
 }

@@ -146,6 +146,14 @@ const DeviceDetailContent = ({
                   </p>
                   <p className="mt-1 break-words">{device.platform}</p>
                 </div>
+                {device.category && (
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Category
+                    </p>
+                    <p className="mt-1 break-words">{device.category}</p>
+                  </div>
+                )}
                 {device.os_version && (
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-muted-foreground">

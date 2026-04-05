@@ -9,6 +9,7 @@ export interface DeviceFilters {
   status?: DeviceStatus;
   platform?: string;
   brand?: string;
+  category?: string;
 }
 
 export interface DeviceListItem extends Omit<Device, 'condition_note'> {
@@ -87,6 +88,7 @@ export async function getDeviceById(id: string): Promise<DeviceDetail> {
     brand: data.brand,
     model: data.model,
     platform: data.platform,
+    category: data.category,
     os_version: data.os_version,
     serial_number: data.serial_number,
     imei: data.imei,
@@ -133,6 +135,7 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
       brand,
       model,
       platform,
+      category,
       os_version,
       serial_number,
       imei,
@@ -183,6 +186,11 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
     query = query.eq('brand', filters.brand);
   }
 
+  // Apply category filter
+  if (filters.category) {
+    query = query.eq('category', filters.category);
+  }
+
   const { data, error } = await query;
 
   if (error) {
@@ -203,6 +211,7 @@ export async function getDevices(filters: DeviceFilters = {}): Promise<DeviceLis
       brand: device.brand,
       model: device.model,
       platform: device.platform,
+      category: device.category,
       os_version: device.os_version,
       serial_number: device.serial_number,
       imei: device.imei,
@@ -281,4 +290,31 @@ export async function getDeviceBrands(): Promise<string[]> {
 
   const brands = Array.from(new Set(data.map((d: any) => d.brand).filter(Boolean)));
   return brands.sort();
+}
+
+/**
+ * Get unique categories for filter dropdown
+ */
+export async function getDeviceCategories(): Promise<string[]> {
+  const { profile } = await requireAuth();
+  const supabase = await createClient();
+
+  let query = supabase
+    .from('devices')
+    .select('category')
+    .not('category', 'is', null);
+
+  if (profile.role !== 'admin') {
+    query = query.in('platform', ['Android', 'iOS', 'iPadOS']);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+
+  const categories = Array.from(new Set(data.map((d: any) => d.category).filter(Boolean)));
+  return categories.sort();
 }
