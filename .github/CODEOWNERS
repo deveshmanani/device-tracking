@@ -1,0 +1,5 @@
+# Default owner for everything in the repo
+* @deveshmanani
+
+# Database migrations require explicit review
+/supabase/ @deveshmanani
