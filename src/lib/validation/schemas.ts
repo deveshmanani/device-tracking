@@ -40,6 +40,12 @@ export const deviceSchema = z.object({
     message: 'Please select a valid platform',
   }),
   
+  category: z.string()
+    .max(50, 'Category must be less than 50 characters')
+    .trim()
+    .optional()
+    .or(z.literal('')),
+  
   os_version: z.string()
     .max(50, 'OS version must be less than 50 characters')
     .trim()
@@ -147,6 +153,7 @@ export const deviceFiltersSchema = z.object({
   status: z.enum(validStatuses).optional(),
   platform: z.string().max(50).optional(),
   brand: z.string().max(50).optional(),
+  category: z.string().max(50).optional(),
 });
 
 export type DeviceFiltersData = z.infer<typeof deviceFiltersSchema>;

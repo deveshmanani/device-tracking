@@ -162,6 +162,14 @@ Required environment variables are validated at runtime using Zod. The app will 
 - ✅ Phase 11: PWA support (COMPLETE)
 - ✅ Phase 12: Validation & UX hardening (COMPLETE - Tasks 12.1 & 12.2)
 
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting a Pull Request.
+
+## Security
+
+To report a vulnerability, please see [SECURITY.md](./SECURITY.md). **Do not open a public issue for security bugs.**
+
 ## License
 
-Internal use only.
+This project is licensed under the [MIT License](./LICENSE).

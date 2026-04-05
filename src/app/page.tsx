@@ -1,9 +1,15 @@
 import { requireAuth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import AppShell from '@/components/layout/AppShell';
 import DashboardContent from '@/components/dashboard/DashboardContent';
 
 const Home = async () => {
   const { user, profile } = await requireAuth();
+
+  // Redirect non-admin users to devices page
+  if (profile.role !== 'admin') {
+    redirect('/devices');
+  }
 
   return (
     <AppShell 

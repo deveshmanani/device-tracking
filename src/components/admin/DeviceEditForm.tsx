@@ -33,6 +33,7 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
       brand: "",
       model: "",
       platform: "",
+      category: "",
       os_version: "",
       serial_number: "",
       imei: "",
@@ -54,6 +55,7 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
           platform: value.platform,
           asset_tag: value.asset_tag,
           status: value.status,
+          category: value.category || undefined,
           os_version: value.os_version || undefined,
           serial_number: value.serial_number || undefined,
           imei: value.imei || undefined,
@@ -87,6 +89,7 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
       form.setFieldValue("brand", device.brand);
       form.setFieldValue("model", device.model);
       form.setFieldValue("platform", device.platform);
+      form.setFieldValue("category", device.category || "");
       form.setFieldValue("os_version", device.os_version || "");
       form.setFieldValue("serial_number", device.serial_number || "");
       form.setFieldValue("imei", device.imei || "");
@@ -228,6 +231,20 @@ const DeviceEditForm = ({ deviceId }: DeviceEditFormProps) => {
                 )}
               </form.Field>
             </div>
+
+            <form.Field name="category">
+              {(field) => (
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Input
+                    id="category"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g., Phone, Tablet, Laptop"
+                  />
+                </div>
+              )}
+            </form.Field>
 
             <div className="grid grid-cols-2 gap-4">
               <form.Field name="asset_tag">

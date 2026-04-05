@@ -7,6 +7,7 @@ import {
   useDevices,
   useDevicePlatforms,
   useDeviceBrands,
+  useDeviceCategories,
 } from "@/hooks/useDevices";
 import {
   useReactTable,
@@ -62,6 +63,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
     status: parseAsString.withDefault(""),
     platform: parseAsString.withDefault(""),
     brand: parseAsString.withDefault(""),
+    category: parseAsString.withDefault(""),
   });
 
   // Local state for search input (for immediate UI feedback)
@@ -95,10 +97,12 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
     status: (filters.status as DeviceStatus) || undefined,
     platform: filters.platform || undefined,
     brand: filters.brand || undefined,
+    category: filters.category || undefined,
   });
 
   const { data: platforms } = useDevicePlatforms();
   const { data: brands } = useDeviceBrands();
+  const { data: categories } = useDeviceCategories();
 
   // Table columns
   const columns = useMemo<ColumnDef<DeviceListItem>[]>(() => {
@@ -151,6 +155,16 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
         header: "Platform",
       },
       {
+        accessorKey: "category",
+        header: "Category",
+        cell: ({ row }) =>
+          row.original.category ? (
+            <span className="text-sm">{row.original.category}</span>
+          ) : (
+            <span className="text-muted-foreground text-sm">—</span>
+          ),
+      },
+      {
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => <StatusBadge status={row.original.status} />,
@@ -201,10 +215,10 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
   });
 
   const hasActiveFilters =
-    filters.search || filters.status || filters.platform || filters.brand;
+    filters.search || filters.status || filters.platform || filters.brand || filters.category;
 
   const hasActiveNonSearchFilters =
-    filters.status || filters.platform || filters.brand;
+    filters.status || filters.platform || filters.brand || filters.category;
 
   return (
     <div className="space-y-4">
@@ -212,7 +226,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
       <Card className="py-0">
         <CardContent className="p-2">
           {/* Desktop: Original layout */}
-          <div className="hidden md:grid md:grid-cols-4 gap-4">
+          <div className="hidden md:grid md:grid-cols-5 gap-4">
             <div className="pt-2 pb-2">
               <Input
                 placeholder="Search devices..."
@@ -265,6 +279,21 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                 ))}
               </Select>
             </div>
+            <div>
+              <Select
+                value={filters.category}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setFilters({ category: e.target.value })
+                }
+              >
+                <option value="">All Categories</option>
+                {categories?.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </Select>
+            </div>
           </div>
 
           {/* Mobile: Search + Collapsible Filters */}
@@ -292,7 +321,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                 {hasActiveNonSearchFilters && (
                   <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium">
                     {
-                      [filters.status, filters.platform, filters.brand].filter(
+                      [filters.status, filters.platform, filters.brand, filters.category].filter(
                         Boolean,
                       ).length
                     }
@@ -345,6 +374,21 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                     {brands?.map((brand) => (
                       <option key={brand} value={brand}>
                         {brand}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <Select
+                    value={filters.category}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      setFilters({ category: e.target.value })
+                    }
+                  >
+                    <option value="">All Categories</option>
+                    {categories?.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
                       </option>
                     ))}
                   </Select>
@@ -464,6 +508,11 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
                           <p className="text-muted-foreground">
                             Platform: {device.platform}
                           </p>
+                          {device.category && (
+                            <p className="text-muted-foreground">
+                              Category: {device.category}
+                            </p>
+                          )}
                           {device.current_holder && (
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mt-2">
                               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -502,7 +551,7 @@ const DevicesList = ({ userRole }: DevicesListProps) => {
         <NoDevicesFound
           hasFilters={!!hasActiveFilters}
           onClearFilters={() =>
-            setFilters({ search: "", status: "", platform: "", brand: "" })
+            setFilters({ search: "", status: "", platform: "", brand: "", category: "" })
           }
         />
       )}

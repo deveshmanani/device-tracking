@@ -26,6 +26,7 @@ const DeviceForm = () => {
       brand: "",
       model: "",
       platform: "iOS" as const,
+      category: "",
       os_version: "",
       serial_number: "",
       imei: "",
@@ -52,6 +53,7 @@ const DeviceForm = () => {
           model: validated.model,
           platform: validated.platform,
           asset_tag: validated.asset_tag,
+          category: validated.category || undefined,
           serial_number: validated.serial_number || undefined,
           os_version: validated.os_version || undefined,
           imei: validated.imei || undefined,
@@ -253,6 +255,26 @@ const DeviceForm = () => {
                 )}
               </form.Field>
             </div>
+
+            <form.Field name="category">
+              {(field) => (
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Input
+                    id="category"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g., Mobile, Tablet, Laptop"
+                  />
+                  {field.state.meta.errors &&
+                    field.state.meta.errors.length > 0 && (
+                      <p className="text-sm text-destructive mt-1">
+                        {field.state.meta.errors[0]}
+                      </p>
+                    )}
+                </div>
+              )}
+            </form.Field>
 
             <form.Field
               name="asset_tag"
